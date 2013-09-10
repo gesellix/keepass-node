@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/core-min.js"></script>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/sha256-min.js"></script>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/cipher-core-min.js"></script>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/pad-nopadding-min.js"></script>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/mode-ecb-min.js"></script>
+		<script type="text/javascript" src="/browsepass/cryptojs/components/aes-min.js"></script>
+		<script type="text/javascript" src="/browsepass/jdataview.js"></script>
+		<script type="text/javascript" src="/browsepass/inflate.js"></script>
+		<script type="text/javascript" src="/browsepass/salsa20.js"></script>
+		<script type="text/javascript" src="/browsepass/kdbx.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var oReq = new XMLHttpRequest();
+			oReq.open("GET", "/browsepass/keepass.bin", true); // sample KeePass file
+			oReq.responseType = "arraybuffer";
+			oReq.onload = function (oEvent) {
+				var arrayBuffer = oReq.response; // Note: not oReq.responseText
+				if (arrayBuffer) {
+					var dataview = new jDataView(arrayBuffer, 0, arrayBuffer.length, true);
+					var entries = readKeePassFile(dataview, "testpass");
+					alert(entries[1]["UserName"]); // should print Michael321
+					alert(entries[1]["Password"]); // should print 12345
+				}
+			};
+			oReq.send(null);
+		</script>
+	</body>
+</html>
