@@ -185,8 +185,9 @@ function readKeePassFile(dataView, filePassword) {
   var salsa = new Salsa20(salsaKey, iv);
 
   for (var i in entries) {
-    var keys = evaluateXPath(entries[i], "String/Key/text()");
-    var values = evaluateXPath(entries[i], "String/Value/text()");
+    var keys = evaluateXPath(entries[i], "String/Key");
+    var values = evaluateXPath(entries[i], "String/Value");
+    assert(keys.length == values.length, "different key and value sizes");
     var properties = {};
     for (var j in keys) {
       properties[keys[j].textContent] = values[j].textContent;
