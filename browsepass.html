@@ -1,31 +1,244 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/core-min.js"></script>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/sha256-min.js"></script>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/cipher-core-min.js"></script>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/pad-nopadding-min.js"></script>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/mode-ecb-min.js"></script>
-		<script type="text/javascript" src="/browsepass/cryptojs/components/aes-min.js"></script>
-		<script type="text/javascript" src="/browsepass/jdataview.js"></script>
-		<script type="text/javascript" src="/browsepass/inflate.js"></script>
-		<script type="text/javascript" src="/browsepass/salsa20.js"></script>
-		<script type="text/javascript" src="/browsepass/kdbx.js"></script>
-	</head>
-	<body>
-		<script type="text/javascript">
-			var oReq = new XMLHttpRequest();
-			oReq.open("GET", "/browsepass/keepass.bin", true); // sample KeePass file
-			oReq.responseType = "arraybuffer";
-			oReq.onload = function (oEvent) {
-				var arrayBuffer = oReq.response; // Note: not oReq.responseText
-				if (arrayBuffer) {
-					var dataview = new jDataView(arrayBuffer, 0, arrayBuffer.length, true);
-					var entries = readKeePassFile(dataview, "testpass");
-					alert(entries[1]["UserName"]); // should print Michael321
-					alert(entries[1]["Password"]); // should print 12345
-				}
-			};
-			oReq.send(null);
-		</script>
-	</body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="//code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script src="cryptojs/components/core-min.js" type="text/javascript"></script>
+    <script src="cryptojs/components/cipher-core-min.js" type="text/javascript"></script>
+    <script src="cryptojs/components/mode-ecb-min.js" type="text/javascript"></script>
+    <script src="cryptojs/components/aes-min.js" type="text/javascript"></script>
+    <script src="cryptojs/components/pad-nopadding-min.js" type="text/javascript"></script>
+    <script src="cryptojs/components/sha256-min.js" type="text/javascript"></script>
+    <script src="inflate.js" type="text/javascript"></script>
+    <script src="jdataview.js" type="text/javascript"></script>
+    <script src="salsa20.js" type="text/javascript"></script>
+    <script src="kdbx.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        INPUT_NO_INPUT = -1;
+        INPUT_REMOTE_URL = 0;
+        INPUT_LOCAL_FILE = 1;
+
+        var default_url = "Enter URL to your KDBX file here...";
+
+        var inputs = new Array(2)
+        var current_input = INPUT_NO_INPUT; 
+
+        function select_input(input_type) {
+            current_input = INPUT_NO_INPUT;
+            var blocks = {
+                url_option: "transparent",
+                file_option: "transparent"
+            };
+            switch (input_type) {
+            case INPUT_REMOTE_URL:
+                var v = $("#url").val();
+                if (v.length > 0 && v != default_url) {
+                    blocks["url_option"] = "green";
+                    current_input = input_type;
+                }
+                break;
+            case INPUT_LOCAL_FILE:
+                if (inputs[input_type] != null) {
+                    blocks["file_option"] = "green";
+                    current_input = input_type;
+                }
+                break;
+            }
+            for (var block in blocks) {
+                $("#" + block).css("background-color", blocks[block]);
+            }
+        }
+
+        function show_entries(entries) {
+            $("#entries").empty();
+            for (var i in entries) {
+                var entry = entries[i];
+                var captionText = entry["Title"] + " -- " + entry["URL"];
+                captionText = document.createTextNode(captionText);
+                var caption = document.createElement("div");
+                caption.appendChild(captionText);
+                $("#entries").append(caption);
+
+                var table = document.createElement("table");
+                $(table).css("width", "100%");
+                $("#entries").append(table);
+                $(table).append("<thead><tr><th>Key</th><th>Value</th></tr></thead>");
+
+                var tbody = document.createElement("tbody");
+                table.appendChild(tbody);
+
+                for (var key in entry) {
+                    var row = document.createElement("tr");
+                    tbody.appendChild(row);
+                    var value = entry[key];
+                    var keyCell = document.createElement("td");
+                    keyCell.appendChild(document.createTextNode(key));
+                    var valueCell = document.createElement("td");
+                    valueCell.appendChild(document.createTextNode(value));
+                    
+                    row.appendChild(keyCell);
+                    row.appendChild(valueCell);
+                }
+            }
+            $("#entries").accordion( {
+                collapsible: true,
+                animate: false,
+                active: false,
+                heightStyle: "content"
+            } );
+        }
+
+        function load_keepass() {
+            var data = inputs[current_input];
+            var pass = $("#password").val();
+            try {
+                var entries = readKeePassFile(data, pass);
+                $("#password").val("");
+                show_entries(entries);
+                var options = {
+                    label: "Unload",
+                    icons: {
+                        primary: "ui-icon-locked"
+                    }
+                };
+                $("#load_unload").button(options);
+            } catch (e) {
+                alert("Cannot open KeePass Database: " + e);
+            }
+            $("#load_unload").removeAttr("disabled");
+        }
+
+        function load_url(url) {
+            /* jQuery does not support arraybuffer yet. so have to do XHR */
+            var oReq = new XMLHttpRequest();
+            oReq.open("GET", url, true);
+            oReq.responseType = "arraybuffer";
+            oReq.onload = function (oEvent) {
+                var arrayBuffer = oReq.response; // Note: not oReq.responseText
+                if (arrayBuffer) {
+                    var dataview = new jDataView(arrayBuffer, 0, arrayBuffer.length, true);
+                    inputs[INPUT_REMOTE_URL] = dataview;
+                    load_keepass();
+                }
+            };
+            oReq.onerror = function(e) {
+                alert("Cannot load URL " + url);
+                $("#load_unload").removeAttr("disabled");
+            };
+            oReq.send(null);
+        }
+
+        window.onload = function() {
+            var dropzone = document.getElementById("file_option");
+
+            dropzone.ondragover = dropzone.ondragenter = function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+            };
+    
+            dropzone.ondrop = function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                var filesArray = event.dataTransfer.files;
+                if (filesArray.length > 0) {
+                    var file = filesArray[0];
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        inputs[INPUT_LOCAL_FILE] = e.result;
+                        select_input(INPUT_LOCAL_FILE);
+                    };
+                    reader.onerror = function(e) {
+                        alert("Cannot load local file " + file.name);
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+
+                select_input(INPUT_LOCAL_FILE);
+            };
+
+            $("#load_unload").button( {
+                label: "Load",
+                icons: {
+                    primary: "ui-icon-unlocked"
+                }
+            } ).click(function() {
+                if ($(this).text() == "Load") {
+                	$(this).attr("disabled", true);
+                    if (current_input == INPUT_REMOTE_URL) {
+                        var url = $("#url").val();
+                        load_url(url);
+                    } else if (current_input == INPUT_LOCAL_FILE) {
+                        load_keepass();
+                    }
+                } else {
+                    $("#password").val("");
+                    $("#entries").empty();
+                    $("#entries").accordion("destroy");
+                    var options = {
+                        label: "Load",
+                        icons: {
+                            primary: "ui-icon-unlocked"
+                        }
+                    };
+                    $(this).button(options);
+                }
+            } );
+
+            $("#url").val(default_url);
+            $("#url").keyup(function(e) {
+                if (e.keyCode == 13) {
+                    select_input(INPUT_REMOTE_URL);
+                }
+            } ).click(function() {
+                if ($(this).val() == default_url) {
+                    $(this).val("");
+                }
+                select_input(INPUT_REMOTE_URL);
+            } ).blur(function() {
+                select_input(INPUT_REMOTE_URL);
+                if ($(this).val().length == 0) {
+                    $(this).val(default_url);
+                }
+            } );
+
+            $("#url_option").click(function() {
+                select_input(INPUT_REMOTE_URL);
+            } );
+            $("#file_option").click(function() {
+                select_input(INPUT_LOCAL_FILE);
+            } );
+
+            $("#password").keyup(function(e) {
+                if (e.keyCode == 13) {
+                    $("#load_unload").click();
+                }
+            } );
+        }
+    </script>
+</head>
+<body>
+    <div style="text-align: center;">
+        <div id="url_option" style="display: inline-block; width: 398px; padding-top: 20px; padding-bottom: 20px; border: 1px dotted grey;">
+            <input type="text" id="url" name="url" style="width: 360px;" value="" />
+        </div>
+        <div id="file_option" style="height: 4em; width: 398px; border: 1px dotted grey; line-height: 4em; margin: 0 auto;">Or drag &amp; drop your KDBX file here...</div>
+        <div style="margin-top: 2em;">
+            <div>
+                Then enter your password and click Unlock.
+            </div>
+            <input type="password" id="password" name="password" style="width: 360px;"/>
+        </div>
+
+        <div>
+            <button id="load_unload">Load</button>
+        </div>
+    </div>
+    <div style="margin-top: 2em;">
+        <div id="entries"></div>
+    </div>
+</body>
 </html>
