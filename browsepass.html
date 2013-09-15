@@ -148,7 +148,9 @@
                     var file = filesArray[0];
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        inputs[INPUT_LOCAL_FILE] = e.result;
+                        var dataview = new jDataView(e.target.result, 0,
+                            e.target.result.length, true);
+                        inputs[INPUT_LOCAL_FILE] = dataview;
                         select_input(INPUT_LOCAL_FILE);
                     };
                     reader.onerror = function(e) {
