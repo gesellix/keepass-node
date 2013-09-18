@@ -26,6 +26,13 @@
         var inputs = new Array(2)
         var current_input = INPUT_NO_INPUT; 
 
+        var keyfile = null;
+
+        function clear_password() {
+            $("#password").val("");
+            keyfile = null;
+        }
+
         function select_input(input_type) {
             current_input = INPUT_NO_INPUT;
             var blocks = {
@@ -94,9 +101,16 @@
         function load_keepass() {
             var data = inputs[current_input];
             var pass = $("#password").val();
+            var passes = new Array();
+            if (pass.length > 0) {
+                passes.push(pass);
+            }
+            if (keyfile != null) {
+                passes.push(keyfile);
+            }
             try {
-                var entries = readKeePassFile(data, pass);
-                $("#password").val("");
+                var entries = readKeePassFile(data, passes);
+                clear_password();
                 show_entries(entries);
                 var options = {
                     label: "Unload",
@@ -162,6 +176,33 @@
                 select_input(INPUT_LOCAL_FILE);
             };
 
+            dropzone = document.getElementById("keyfile");
+
+            dropzone.ondragover = dropzone.ondragenter = function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+            };
+    
+            dropzone.ondrop = function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                var filesArray = event.dataTransfer.files;
+                if (filesArray.length > 0) {
+                    var file = filesArray[0];
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var dataview = new jDataView(e.target.result, 0,
+                            e.target.result.length, true);
+                        keyfile = readKeyFile(dataview);
+                    };
+                    reader.onerror = function(e) {
+                        alert("Cannot load key file " + file.name);
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            };
+
             $("#load_unload").button( {
                 label: "Load",
                 icons: {
@@ -177,7 +218,7 @@
                         load_keepass();
                     }
                 } else {
-                    $("#password").val("");
+                    clear_password();
                     $("#entries").empty();
                     $("#entries").accordion("destroy");
                     var options = {
@@ -233,6 +274,7 @@
                 Then enter your password and click Unlock.
             </div>
             <input type="password" id="password" name="password" style="width: 360px;"/>
+            <div id="keyfile" style="height: 4em; width: 398px; border: 1px dotted grey; line-height: 4em; margin: 0 auto;">And/Or drag in a key file...</div>
         </div>
 
         <div>
