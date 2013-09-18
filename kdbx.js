@@ -1,12 +1,12 @@
 /*
 
-readKeePassFile(dataView, filePassword):
+readKeePassFile(dataView, filePasswords):
 
   Parameters:
 
     * dataView: a jDataView instance of the byte array
                 representing a KeePass file
-    * filePassword: the password (string) to open this file
+    * filePasswords: the passwords (array of strings) to open this file
 
   Returns: An array of objects whose fields are:
 
@@ -87,7 +87,7 @@ function readKeyFile(dataView) {
     return key_data;
 }
 
-function readKeePassFile(dataView, filePassword) {
+function readKeePassFile(dataView, filePasswords) {
 	var sig1 = dataView.getUint32();
 	var sig2 = dataView.getUint32();
 	assert(sig1 == 0x9AA2D903, "Invalid version");
@@ -118,12 +118,19 @@ function readKeePassFile(dataView, filePassword) {
     "Transform seed not 32 bytes");
   assert(header[InnerRandomStreamID] == "\x02\x00\x00\x00",
     "Not Salsa20 CrsAlgorithm");
-  //assert(CipherID for AES)
+  assert(header[CipherID] == ("\x31\xC1\xF2\xE6\xBF\x71\x43\x50" +
+    "\xBE\x58\x05\x21\x6A\xFC\x5A\xFF"), "Not AES");
 
-  var masterPassword = CryptoJS.SHA256(filePassword);
-  var compositeKey = CryptoJS.SHA256(masterPassword);
-  compositeKey = compositeKey.toString(CryptoJS.enc.Hex);
+  var compositeKey = "";
+  for (var i = 0; i < filePasswords.length; ++i) {
+    var regular = CryptoJS.enc.Latin1.parse(filePasswords[i]);
+    compositeKey += CryptoJS.SHA256(regular).toString(CryptoJS.enc.Hex);
+  }
+  compositeKey = CryptoJS.enc.Hex.parse(compositeKey);
   //alert("Composite Key: " + compositeKey);
+  compositeKey = CryptoJS.SHA256(compositeKey).toString(CryptoJS.enc.Hex);
+  compositeKey = compositeKey.toString(CryptoJS.enc.Hex);
+  //alert("Hashed Composite Key: " + compositeKey);
   var tmpKey = {};
   tmpKey[0] = CryptoJS.enc.Hex.parse(compositeKey.substring(0, 32));
   tmpKey[1] = CryptoJS.enc.Hex.parse(compositeKey.substring(32, 64));
