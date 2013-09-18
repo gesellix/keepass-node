@@ -56,6 +56,37 @@ function evaluateXPath(aNode, aExpr) {
   return found;
 }
 
+function readKeyFile(dataView) {
+    var file_data = dataView.getString();
+    var xml = (new DOMParser()).parseFromString(file_data, "text/xml");
+    var key_data = evaluateXPath(xml, "//KeyFile/Key/Data");
+    if (key_data.length > 0) {
+        // test XML key file
+        key_data = atob(key_data[0].textContent);
+        if (key_data.length != 32) {
+            // not XML key file, test 32-byte key file
+            if (file_data.length == 32) {
+                key_data = file_data;
+            } else if (file_data.length == 64) {
+                // not 32-byte key, test 64-byte hex encoded
+                key_data = CryptoJS.enc.Hex.parse(file_data);
+                key_data = key_data.toString(CryptoJS.enc.Latin1);
+                if (key_data.length != 32) {
+                    // not, then just take the file data
+                    key_data = file_data;
+                }
+            } else {
+                key_data = file_data;
+            }
+        } else {
+            key_data = file_data;
+        }
+    } else {
+        key_data = file_data;
+    }
+    return key_data;
+}
+
 function readKeePassFile(dataView, filePassword) {
 	var sig1 = dataView.getUint32();
 	var sig2 = dataView.getUint32();
