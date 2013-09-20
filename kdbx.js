@@ -242,6 +242,10 @@ function readKeePassFile(dataView, filePasswords) {
       properties[keys[j].textContent] = value;
     }
     //alert("Password: " + properties["Password"]);
+    if (entries[i].parentNode.nodeName == "History") {
+      // ignore History
+      continue;
+    }
     keepassEntries.push(properties);
   }
 
