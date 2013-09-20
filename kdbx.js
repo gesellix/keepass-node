@@ -228,16 +228,19 @@ function readKeePassFile(dataView, filePasswords) {
     assert(keys.length == values.length, "different key and value sizes");
     var properties = {};
     for (var j in keys) {
-      properties[keys[j].textContent] = values[j].textContent;
+      var value = values[j].textContent;
+      if (values[j].getAttribute("Protected") == "True") {
+        value = atob(value);
+        var xorbuf = salsa.getBytes(value.length);
+        //alert("xorbuf: " + xorbuf);
+        var r = new Array();
+        for (var k = 0; k < value.length; ++k) {
+          r[k] = String.fromCharCode(value.charCodeAt(k) ^ xorbuf[k]);
+        }
+        value = r.join("");
+      }
+      properties[keys[j].textContent] = value;
     }
-    var password = atob(properties["Password"]);
-    var xorbuf = salsa.getBytes(password.length);
-    //alert("xorbuf: " + xorbuf);
-    var r = new Array();
-    for (var i = 0; i < password.length; ++i) {
-      r[i] = String.fromCharCode(password.charCodeAt(i) ^ xorbuf[i]);
-    }
-    properties["Password"] = r.join("");
     //alert("Password: " + properties["Password"]);
     keepassEntries.push(properties);
   }
