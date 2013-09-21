@@ -30,6 +30,7 @@
 
         function clear_password() {
             $("#password").val("");
+            $("#keyfile").css("background-color", "transparent");
             keyfile = null;
         }
 
@@ -195,6 +196,7 @@
                         var dataview = new jDataView(e.target.result, 0,
                             e.target.result.length, true);
                         keyfile = readKeyFile(dataview);
+                        $("#keyfile").css("background-color", "green");
                     };
                     reader.onerror = function(e) {
                         alert("Cannot load key file " + file.name);
