@@ -101,6 +101,7 @@
 
         function load_keepass() {
             var data = inputs[current_input];
+            data = new jDataView(data, 0, data.length, true)
             var pass = $("#password").val();
             var passes = new Array();
             if (pass.length > 0) {
@@ -134,8 +135,7 @@
             oReq.onload = function (oEvent) {
                 var arrayBuffer = oReq.response; // Note: not oReq.responseText
                 if (arrayBuffer) {
-                    var dataview = new jDataView(arrayBuffer, 0, arrayBuffer.length, true);
-                    inputs[INPUT_REMOTE_URL] = dataview;
+                    inputs[INPUT_REMOTE_URL] = arrayBuffer;
                     load_keepass();
                 }
             };
@@ -163,9 +163,7 @@
                     var file = filesArray[0];
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        var dataview = new jDataView(e.target.result, 0,
-                            e.target.result.length, true);
-                        inputs[INPUT_LOCAL_FILE] = dataview;
+                        inputs[INPUT_LOCAL_FILE] = e.target.result;
                         select_input(INPUT_LOCAL_FILE);
                     };
                     reader.onerror = function(e) {
