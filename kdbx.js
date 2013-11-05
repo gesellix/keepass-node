@@ -56,6 +56,10 @@ function evaluateXPath(aNode, aExpr) {
   return found;
 }
 
+function readPassword(password) {
+    return CryptoJS.SHA256(password);
+}
+
 function readKeyFile(dataView) {
     var file_data = dataView.getString();
     var xml = (new DOMParser()).parseFromString(file_data, "text/xml");
@@ -63,26 +67,31 @@ function readKeyFile(dataView) {
     if (key_data.length > 0) {
         // test XML key file
         key_data = atob(key_data[0].textContent);
-        if (key_data.length != 32) {
-            // not XML key file, test 32-byte key file
-            if (file_data.length == 32) {
-                key_data = file_data;
-            } else if (file_data.length == 64) {
-                // not 32-byte key, test 64-byte hex encoded
-                key_data = CryptoJS.enc.Hex.parse(file_data);
-                key_data = key_data.toString(CryptoJS.enc.Latin1);
-                if (key_data.length != 32) {
-                    // not, then just take the file data
-                    key_data = file_data;
-                }
-            } else {
-                key_data = file_data;
-            }
+        if (key_data.length == 32) {
+            key_data = CryptoJS.enc.Latin1.parse(key_data);
         } else {
-            key_data = file_data;
+            key_data = null;
         }
     } else {
-        key_data = file_data;
+        key_data = null;
+    }
+    if (key_data == null) {
+        // not XML key file
+        if (file_data.length == 32) {
+            // test 32-byte key file
+            key_data = CryptoJS.enc.Latin1.parse(file_data);
+        } else if (file_data.length == 64) {
+            // not 32-byte key, test 64-byte hex encoded
+            key_data = CryptoJS.enc.Hex.parse(file_data);
+            if (key_data.length != 32) {
+                key_data = null;
+            }
+        }
+    }
+    if (key_data == null) {
+        // not XML and not key file
+        key_data = CryptoJS.enc.Latin1.parse(file_data);
+        key_data = CryptoJS.SHA256(key_data);
     }
     return key_data;
 }
@@ -123,8 +132,8 @@ function readKeePassFile(dataView, filePasswords) {
 
   var compositeKey = "";
   for (var i = 0; i < filePasswords.length; ++i) {
-    var regular = CryptoJS.enc.Latin1.parse(filePasswords[i]);
-    compositeKey += CryptoJS.SHA256(regular).toString(CryptoJS.enc.Hex);
+    var regular = filePasswords[i];
+    compositeKey += regular.toString(CryptoJS.enc.Hex);
   }
   compositeKey = CryptoJS.enc.Hex.parse(compositeKey);
   //alert("Composite Key: " + compositeKey);

@@ -105,6 +105,7 @@
             var pass = $("#password").val();
             var passes = new Array();
             if (pass.length > 0) {
+                pass = readPassword(pass);
                 passes.push(pass);
             }
             if (keyfile != null) {
