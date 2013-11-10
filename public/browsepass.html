@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <script src="https://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/core-min.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/cipher-core-min.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/mode-ecb-min.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/aes-min.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/pad-nopadding-min.js" type="text/javascript"></script>
+    <script src="jslib/cryptojs/components/sha256-min.js" type="text/javascript"></script>
+    <script src="jslib/inflate.js" type="text/javascript"></script>
+    <script src="jslib/jdataview.js" type="text/javascript"></script>
+    <script src="jslib/salsa20.js" type="text/javascript"></script>
+    <script src="jslib/kdbx.js" type="text/javascript"></script>
+    <script src="js/browsepass.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align: center;">
+    <div id="url_option"
+         style="display: inline-block; width: 398px; padding-top: 20px; padding-bottom: 20px; border: 1px dotted grey;">
+        <input type="text" id="url" name="url" style="width: 360px;" value=""/>
+    </div>
+    <div id="file_option"
+         style="height: 4em; width: 398px; border: 1px dotted grey; line-height: 4em; margin: 0 auto;">Or drag &amp; drop your KDBX file here...
+    </div>
+    <div style="margin-top: 2em;">
+        <div>
+            Then enter your password and click Unlock.
+        </div>
+        <input type="password" id="password" name="password" style="width: 360px;"/>
+
+        <div id="keyfile"
+             style="height: 4em; width: 398px; border: 1px dotted grey; line-height: 4em; margin: 0 auto;">And/Or drag in a key file...
+        </div>
+    </div>
+
+    <div>
+        <button id="load_unload">Load</button>
+    </div>
+</div>
+<div style="margin-top: 2em;">
+    <div id="entries"></div>
+</div>
+</body>
+</html>
