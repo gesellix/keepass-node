@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KeePass 2 reader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+
+    <script src="js/init.js" type="text/javascript"></script>
+    <script src="js/keepass-entries.js" type="text/javascript"></script>
+    <script src="js/keepass.js" type="text/javascript"></script>
+</head>
+<body>
+<div ng-app="keepass">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="page-header">
+                            <h1>KeePass 2 reader</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-controller="keepassBrowser">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="databases" class="col-sm-2 control-label" ng-show="!loading">Databases</label>
+
+                                    <div class="col-sm-10">
+                                        <p ng-show="loading">loading databases...</p>
+                                        <select ng-show="!loading"
+                                                ng-model="selectedDb"
+                                                ng-options="db as db for db in databases"
+                                                id="databases"
+                                                class="form-control">
+                                            <option value="">choose database&hellip;</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dbPassword" class="col-sm-2 control-label">Password</label>
+
+                                    <div class="col-sm-10">
+                                        <div class="input-group">
+                                            <input ng-model="dbPassword"
+                                                   type="password" id="dbPassword"
+                                                   class="form-control" placeholder="Password"/>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default"
+                                                        ng-click="loadEntries()">load
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="alert alert-info" ng-show="messages">
+                                <ul class="list-group">
+                                    <li ng-repeat="message in messages" class="list-group-item">{{message}}</li>
+                                </ul>
+                            </div>
+                            <div class="alert alert-danger" ng-show="errors">
+                                <ul class="list-group">
+                                    <li ng-repeat="error in errors" class="list-group-item">{{error}}</li>
+                                </ul>
+                            </div>
+
+                            <kdbx-entry-list ng-show="dbEntries" kdbx-entries="dbEntries"></kdbx-entry-list>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

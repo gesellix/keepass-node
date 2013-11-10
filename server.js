@@ -19,12 +19,16 @@
     var data = fs.readFileSync(filename);
     var dataView = jDataView(data, undefined, undefined, true);
     var entries = kdbx.readEntries(dataView, [CryptoJS.SHA256(password)]);
-//    console.log(entries);
     return entries;
+  };
+
+  var endsWith = function (string, suffix) {
+    return string && string.match(suffix + "$") == suffix
   };
 
   var app = express();
   app.use(express.compress());
+  app.use(express.bodyParser());
   app.use(express.basicAuth(function (user, pass, callback) {
     var isValid = (user === basicAuth.username && pass === basicAuth.password);
     callback(null /* error */, isValid);
@@ -36,17 +40,31 @@
   app.get(/index.html/, function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
   });
-  app.get(/(css|js)\/(.+)/, function (req, res, next) {
+  app.get(/(css|js|templates)\/(.+)/, function (req, res, next) {
     express.static(__dirname + "/public")(req, res, next)
   });
-  app.get('/keepass/entries/:filename', function (req, res) {
-    var entries = readKdbx(__dirname + '/local/' + req.params.filename, 'kdbxPassword');
-    res.json(entries);
+
+  app.get('/databases', function (req, res) {
+    fs.readdir(__dirname + '/local/', function (err, filenames) {
+      var databases = filenames.filter(function (filename) {
+        return endsWith(filename, '.kdbx');
+      });
+      res.json({'databases': databases});
+    });
+  });
+  app.post('/databases/:filename', function (req, res) {
+    var filename = __dirname + '/local/' + req.params.filename;
+    if (!fs.existsSync(filename)) {
+      res.send("file '" + req.params.filename + "' doesn't exist", 404);
+    }
+    else {
+      var reqBody = req.body;
+      var entries = readKdbx(filename, reqBody.password);
+      res.json({entries: entries});
+    }
   });
 
   app.listen(PORT, function () {
-    console.log('server is listening on localhost:' + PORT);
+    console.log('server is listening on port ' + PORT);
   });
-
-//  var entries = readKdbx(__dirname + '/local/keepassdb.kdbx', 'kdbxPassword');
 })();
