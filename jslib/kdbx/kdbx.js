@@ -144,9 +144,9 @@
       }
     }
     assert(header[MasterSeed].length == 32,
-           "Master seed not 32 bytes");
+           "Master seed not 32 bytes, got " + header[MasterSeed].length + " bytes.");
     assert(header[TransformSeed].length == 32,
-           "Transform seed not 32 bytes");
+           "Transform seed not 32 bytes, got " + header[TransformSeed].length + " bytes.");
     assert(header[InnerRandomStreamID] == "\x02\x00\x00\x00",
            "Not Salsa20 CrsAlgorithm");
     assert(header[CipherID] == ("\x31\xC1\xF2\xE6\xBF\x71\x43\x50" +
@@ -158,10 +158,10 @@
       compositeKey += regular.toString(CryptoJS.enc.Hex);
     }
     compositeKey = CryptoJS.enc.Hex.parse(compositeKey);
-    //alert("Composite Key: " + compositeKey);
+//    console.log("Composite Key: " + compositeKey);
     compositeKey = CryptoJS.SHA256(compositeKey).toString(CryptoJS.enc.Hex);
     compositeKey = compositeKey.toString(CryptoJS.enc.Hex);
-    //alert("Hashed Composite Key: " + compositeKey);
+//    console.log("Hashed Composite Key: " + compositeKey);
     var tmpKey = {};
     tmpKey[0] = CryptoJS.enc.Hex.parse(compositeKey.substring(0, 32));
     tmpKey[1] = CryptoJS.enc.Hex.parse(compositeKey.substring(32, 64));
@@ -203,7 +203,7 @@
     var decryptedData = CryptoJS.AES.decrypt(cipherParams, aesKey,
                                              { mode: CryptoJS.mode.CBC, iv: aesIV,
                                                padding: CryptoJS.pad.Pkcs7 });
-    //alert("Decrypted: " + decryptedData);
+//    console.log("Decrypted: " + decryptedData);
     decryptedData = decryptedData.toString(CryptoJS.enc.Latin1);
 
     dataView = new jDataView(decryptedData, 0, decryptedData.length, true);
@@ -234,7 +234,7 @@
     gzipData = gzipData.substring(10);
     var xmlData = zip_inflate(gzipData);
     assert(xmlData.indexOf("<?xml") == 0, "XML data is not valid");
-    //alert(xmlData);
+    //console.log(xmlData);
     var xml = (new DOMParser()).parseFromString(xmlData, "text/xml");
     var keepassEntries = new Array();
     var entries = evaluateXPath(xml, "//Entry");
