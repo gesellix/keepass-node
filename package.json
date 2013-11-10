@@ -1,0 +1,19 @@
+{
+  "name": "keepass-node",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "latest",
+    "jdataview": "latest",
+    "crypto-js": "latest",
+    "iced-coffee-script": "latest",
+    "triplesec": "latest",
+    "xmldom": "latest",
+    "xpath": "latest",
+    "atob": "latest"
+  }
+}
