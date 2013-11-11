@@ -3,5 +3,5 @@
 
 node_modules/
 
-!local/.gitkeep
 local/*
+!local/.gitkeep
