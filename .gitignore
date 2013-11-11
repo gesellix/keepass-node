@@ -5,3 +5,5 @@ node_modules/
 
 local/*
 !local/.gitkeep
+!local/example.kdbx
+!local/example.kdbx.txt
