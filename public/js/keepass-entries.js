@@ -31,7 +31,9 @@ keepassEntries.directive('kdbxEntry', function () {
       kdbxEntryIndex: '='
     },
     link: function (scope, element) {
+      scope.showPassword = false;
       element.find('.collapse').collapse({toggle: false});
+      new ZeroClipboard(element.find('.copy-password-btn'));
     }
   };
 });

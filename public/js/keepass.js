@@ -26,10 +26,15 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     kdbxBackendService.getEntries($scope.selectedDb, $scope.dbPassword)
         .then(function (success) {
                 $scope.dbEntries = success.data.entries;
-                $scope.messages = ["HTTP status: " + success.status, success.data.entries.length + " entries"];
+                $scope.messages = [
+//                  "HTTP status: " + success.status,
+                  success.data.entries.length + " entries found"];
               },
               function (error) {
-                $scope.errors = ["HTTP status: " + error.status, error.data];
+                $scope.errors = [
+                  "HTTP status: " + error.status,
+                  error.data
+                ];
               });
   };
 

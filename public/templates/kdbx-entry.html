@@ -16,7 +16,27 @@
                 <dd>{{kdbxEntry.UserName}}</dd>
                 <dt>Password</dt>
                 <dd>
-                    <div tabindex="0">{{kdbxEntry.Password}}</div>
+                    <button type="button"
+                            class="btn btn-default btn-sm copy-password-btn"
+                            data-clipboard-text="{{kdbxEntry.Password}}">
+                        <span class="glyphicon glyphicon-share"></span>
+                    </button>
+                    <button type="button"
+                            class="btn btn-default btn-sm"
+                            ng-show="!showPassword"
+                            ng-click="showPassword = !showPassword">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                    </button>
+                    <button type="button"
+                            class="btn btn-default btn-sm"
+                            ng-show="showPassword"
+                            ng-click="showPassword = !showPassword">
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                    </button>
+                    <input ng-readonly="true" ng-show="showPassword"
+                           style="display: inline-block;"
+                           ng-value="kdbxEntry.Password"/>
+                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{kdbxEntry.Password}}</div>-->
                 </dd>
                 <dt>Notes</dt>
                 <dd>{{kdbxEntry.Notes}}</dd>
