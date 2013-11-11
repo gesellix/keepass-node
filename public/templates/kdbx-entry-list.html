@@ -1,7 +1,7 @@
 <div class="kdbxEntries">
-    <ul>
-        <li ng-repeat="entry in kdbxEntries">
-            <kdbx-entry kdbx-entry="entry"></kdbx-entry>
-        </li>
-    </ul>
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default" ng-repeat="entry in kdbxEntries">
+            <kdbx-entry kdbx-entry="entry" kdbx-entry-index="$index"></kdbx-entry>
+        </div>
+    </div>
 </div>

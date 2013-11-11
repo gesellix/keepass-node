@@ -1,1 +1,26 @@
-<div class="kdbxEntry">{{kdbxEntry}}</div>
+<div class="kdbxEntry">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{kdbxEntry.Title}}</a>
+        </h4>
+    </div>
+    <div id="collapse{{kdbxEntryIndex}}" class="panel-collapse collapse">
+        <div class="panel-body">
+            <!--{{kdbxEntry}}-->
+            <dl class="dl-horizontal">
+                <dt>Title</dt>
+                <dd>{{kdbxEntry.Title}}</dd>
+                <dt>URL</dt>
+                <dd><a ng-href="{{kdbxEntry.URL}}" target="_blank">{{kdbxEntry.URL}}</a></dd>
+                <dt>UserName</dt>
+                <dd>{{kdbxEntry.UserName}}</dd>
+                <dt>Password</dt>
+                <dd>
+                    <div tabindex="0">{{kdbxEntry.Password}}</div>
+                </dd>
+                <dt>Notes</dt>
+                <dd>{{kdbxEntry.Notes}}</dd>
+            </dl>
+        </div>
+    </div>
+</div>

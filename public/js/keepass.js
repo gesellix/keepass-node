@@ -35,6 +35,9 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
 
   init('keepassBrowser', [kdbxBackendService.getDatabases()], function (result) {
     $scope.databases = result[0].data.databases;
+    if ($scope.databases && $scope.databases.length === 1) {
+      $scope.selectedDb = $scope.databases[0];
+    }
     $scope.loading = false;
   });
 });

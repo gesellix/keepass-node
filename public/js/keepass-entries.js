@@ -27,7 +27,11 @@ keepassEntries.directive('kdbxEntry', function () {
     templateUrl: 'templates/kdbx-entry.html',
     controller: 'kdbxEntryController',
     scope: {
-      kdbxEntry: '='
+      kdbxEntry: '=',
+      kdbxEntryIndex: '='
+    },
+    link: function (scope, element) {
+      element.find('.collapse').collapse({toggle: false});
     }
   };
 });
