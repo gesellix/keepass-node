@@ -3,6 +3,7 @@
 
   var express = require('express');
   var fs = require('fs');
+  var _ = require('underscore');
 
   var CryptoJS = require('crypto-js/core');
   require('crypto-js/sha256');
@@ -46,7 +47,7 @@
 
   app.get('/databases', function (req, res) {
     fs.readdir(__dirname + '/local/', function (err, filenames) {
-      var databases = filenames.filter(function (filename) {
+      var databases = _.filter(filenames, function (filename) {
         return endsWith(filename, '.kdbx');
       });
       res.json({'databases': databases});
