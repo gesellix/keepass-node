@@ -15,6 +15,7 @@
     "xmldom": "latest",
     "xpath": "latest",
     "atob": "latest",
-    "underscore": "latest"
+    "underscore": "latest",
+    "keepass.io": "latest"
   }
 }

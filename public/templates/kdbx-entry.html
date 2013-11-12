@@ -1,7 +1,7 @@
 <div class="kdbxEntry">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{kdbxEntry.Title}}</a>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{kdbxEntry.title}}</a>
         </h4>
     </div>
     <div id="collapse{{kdbxEntryIndex}}" class="panel-collapse collapse">
@@ -9,16 +9,16 @@
             <!--{{kdbxEntry}}-->
             <dl class="dl-horizontal">
                 <dt>Title</dt>
-                <dd>{{kdbxEntry.Title}}</dd>
+                <dd>{{kdbxEntry.title}}</dd>
                 <dt>URL</dt>
-                <dd><a ng-href="{{kdbxEntry.URL}}" target="_blank">{{kdbxEntry.URL}}</a></dd>
+                <dd><a ng-href="{{kdbxEntry.url}}" target="_blank">{{kdbxEntry.url}}</a></dd>
                 <dt>UserName</dt>
-                <dd>{{kdbxEntry.UserName}}</dd>
+                <dd>{{kdbxEntry.username}}</dd>
                 <dt>Password</dt>
                 <dd>
                     <button type="button"
                             class="btn btn-default btn-sm copy-password-btn"
-                            data-clipboard-text="{{kdbxEntry.Password}}">
+                            data-clipboard-text="{{kdbxEntry.password}}">
                         <span class="glyphicon glyphicon-share"></span>
                     </button>
                     <button type="button"
@@ -35,11 +35,11 @@
                     </button>
                     <input ng-readonly="true" ng-show="showPassword"
                            style="display: inline-block;"
-                           ng-value="kdbxEntry.Password"/>
-                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{kdbxEntry.Password}}</div>-->
+                           ng-value="kdbxEntry.password"/>
+                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{kdbxEntry.password}}</div>-->
                 </dd>
                 <dt>Notes</dt>
-                <dd>{{kdbxEntry.Notes}}</dd>
+                <dd>{{kdbxEntry.notes}}</dd>
             </dl>
         </div>
     </div>
