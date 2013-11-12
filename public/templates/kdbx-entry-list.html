@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default" ng-repeat="entry in kdbxEntries | filter:{Title:searchText}">
+                <div class="panel panel-default" ng-repeat="entry in kdbxEntries | filter:{title:searchText}">
                     <kdbx-entry kdbx-entry="entry" kdbx-entry-index="$index"></kdbx-entry>
                 </div>
             </div>

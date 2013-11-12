@@ -9,6 +9,7 @@
   require('crypto-js/sha256');
   var jDataView = require('jdataview');
   var kdbx = require('./jslib/kdbx');
+  var keepassio = require('keepass.io');
 
   var PORT = process.env.PORT || 8888;
   var basicAuth = {
@@ -60,8 +61,23 @@
     }
     else {
       var reqBody = req.body;
-      var entries = readKdbx(filename, reqBody.password);
-      res.json({entries: entries});
+
+      var db = new keepassio();
+      db.setCredentials({
+                          password: reqBody.password
+//                          , keyfile: 'my.key'
+                        });
+
+      db.load(filename, function (error, data) {
+        if (error) {
+          throw error;
+        }
+        var entries = _.values(data.groups[_.keys(data.groups)[0]].entries);
+        res.json({entries: entries});
+      });
+
+//      var entries = readKdbx(filename, reqBody.password);
+//      res.json({entries: entries});
     }
   });
 
