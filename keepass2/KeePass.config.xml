@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Configuration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Meta>
 		<PreferUserConfiguration>false</PreferUserConfiguration>
 		<OmitItemsWithDefaultValues>true</OmitItemsWithDefaultValues>
 	</Meta>
 	<Application>
-		<LastUpdateCheck>2013-11-11T18:47:48Z</LastUpdateCheck>
+		<LastUpdateCheck>2013-11-12T21:17:05Z</LastUpdateCheck>
 		<LastUsedFile>
 			<Path>../local/example.kdbx</Path>
 			<CredProtMode>Obf</CredProtMode>
@@ -40,8 +40,8 @@
 		<Y>146</Y>
 		<Width>989</Width>
 		<Height>696</Height>
-		<SplitterHorizontalFrac>0.8322259</SplitterHorizontalFrac>
-		<SplitterVerticalFrac>0.24974516</SplitterVerticalFrac>
+		<SplitterHorizontalFrac>0.8313458</SplitterHorizontalFrac>
+		<SplitterVerticalFrac>0.248715311</SplitterVerticalFrac>
 		<Layout>Default</Layout>
 		<ToolBar />
 		<EntryView />
