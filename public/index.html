@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet/less" type="text/css" href="css/bootstrap/less/bootstrap.less"/>
+    <link rel="stylesheet" type="text/css" href="js/treeview/css/angular.treeview.css">
 
     <script type="text/javascript">
         less = {
@@ -26,6 +27,7 @@
     <script src="js/init.js" type="text/javascript"></script>
     <script src="js/keepass-entries.js" type="text/javascript"></script>
     <script src="js/keepass.js" type="text/javascript"></script>
+    <script src="js/treeview/angular.treeview.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div ng-app="keepass">
@@ -92,8 +94,17 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12">
-                            <kdbx-entry-list ng-show="dbEntries" kdbx-entries="dbEntries"></kdbx-entry-list>
+                        <div class="col-xs-3">
+                            <div data-angular-treeview="true"
+                                 data-tree-id="kdbxTree"
+                                 data-tree-model="groupsTree"
+                                 data-node-id="id"
+                                 data-node-label="label"
+                                 data-node-children="children">
+                            </div>
+                        </div>
+                        <div class="col-xs-9">
+                            <kdbx-entry-list ng-show="groupEntries" kdbx-entries="groupEntries"></kdbx-entry-list>
                         </div>
                     </div>
                 </div>

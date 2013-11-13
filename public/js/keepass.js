@@ -1,6 +1,6 @@
 "use strict";
 
-var keepass = angular.module('keepass', ['init', 'keepass-entries']);
+var keepass = angular.module('keepass', ['init', 'angularTreeview', 'keepass-entries']);
 
 keepass.service('kdbxBackendService', function ($http) {
   this.getDatabases = function () {
@@ -12,29 +12,50 @@ keepass.service('kdbxBackendService', function ($http) {
 });
 
 keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService) {
-  $scope.loading = true;
-  $scope.databases = [];
-  $scope.selectedDb = null;
-  $scope.dbPassword = null;
-  $scope.dbEntries = [];
   $scope.messages = [];
   $scope.errors = [];
 
+  $scope.loading = true;
+  $scope.databases = [];
+
+  $scope.selectedDb = null;
+  $scope.dbPassword = null;
+
+  $scope.db = {};
+  $scope.kdbxTree = null;
+  $scope.groups = {};
+  $scope.groupEntries = [];
+
+  var collectGroupsAsTree = function (groups) {
+    return _.reduce(groups, function (acc, group, key) {
+      acc.push({label: group.name, id: key, children: collectGroupsAsTree(group.groups), group: group});
+      return acc;
+    }, []);
+  };
+
+  var onDbLoaded = function (db) {
+    console.log(db);
+    $scope.db = db;
+    $scope.groupsTree = collectGroupsAsTree(db.groups);
+//    $scope.groupsTree = db.groups;
+  };
+
+  var onGroupSelected = function (group) {
+    $scope.groupEntries = group.entries;
+  };
+
   $scope.loadEntries = function () {
-    $scope.messages = [];
     $scope.errors = [];
+    $scope.messages = ["loading..."];
     kdbxBackendService.getEntries($scope.selectedDb, $scope.dbPassword)
         .then(function (success) {
-                $scope.dbEntries = success.data.entries;
-                $scope.messages = [
-//                  "HTTP status: " + success.status,
-                  success.data.entries.length + " entries found"];
+                $scope.messages = [];
+                $scope.messages.push("HTTP status: " + success.status);
+                onDbLoaded(success.data);
               },
               function (error) {
-                $scope.errors = [
-                  "HTTP status: " + error.status,
-                  error.data
-                ];
+                $scope.errors.push("HTTP status: " + error.status);
+                $scope.errors.push(error.data);
               });
   };
 
@@ -45,4 +66,11 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     }
     $scope.loading = false;
   });
+
+  init.watchAfterInit($scope, 'kdbxTree.currentNode', function () {
+    if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
+      onGroupSelected($scope.kdbxTree.currentNode.group);
+//      onGroupSelected($scope.kdbxTree.currentNode);
+    }
+  }, false)
 });

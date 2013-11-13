@@ -4,28 +4,13 @@
   var express = require('express');
   var fs = require('fs');
   var _ = require('underscore');
-
-  var CryptoJS = require('crypto-js/core');
-  require('crypto-js/sha256');
-  var jDataView = require('jdataview');
-  var kdbx = require('./jslib/kdbx');
   var keepassio = require('keepass.io');
+  var q = require('q');
 
   var PORT = process.env.PORT || 8888;
   var basicAuth = {
     username: 'username',
     password: 'password'
-  };
-
-  var readKdbx = function (filename, password) {
-    var data = fs.readFileSync(filename);
-    var dataView = jDataView(data, undefined, undefined, true);
-    var entries = kdbx.readEntries(dataView, [CryptoJS.SHA256(password)]);
-    return entries;
-  };
-
-  var endsWith = function (string, suffix) {
-    return string && string.match(suffix + "$") == suffix
   };
 
   var app = express();
@@ -35,6 +20,25 @@
     var isValid = (user === basicAuth.username && pass === basicAuth.password);
     callback(null /* error */, isValid);
   }));
+
+  var readKdbx = function (filename, password) {
+    var deferred = q.defer();
+    var db = new keepassio();
+    db.setCredentials({ password: password /*, keyfile: 'my.key'*/ });
+    db.load(filename, function (error, data) {
+      if (error) {
+        deferred.reject(error);
+      }
+      else {
+        deferred.resolve(data);
+      }
+    });
+    return deferred.promise;
+  };
+
+  var endsWith = function (string, suffix) {
+    return string && string.match(suffix + "$") == suffix
+  };
 
   app.get('/', function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
@@ -61,23 +65,12 @@
     }
     else {
       var reqBody = req.body;
-
-      var db = new keepassio();
-      db.setCredentials({
-                          password: reqBody.password
-//                          , keyfile: 'my.key'
-                        });
-
-      db.load(filename, function (error, data) {
-        if (error) {
-          throw error;
-        }
-        var entries = _.values(data.groups[_.keys(data.groups)[0]].entries);
-        res.json({entries: entries});
-      });
-
-//      var entries = readKdbx(filename, reqBody.password);
-//      res.json({entries: entries});
+      q.when(readKdbx(filename, reqBody.password))
+          .then(function (result) {
+                  res.json(result);
+                }, function (reason) {
+                  res.send("problem occurred reading '" + req.params.filename + "': " + reason, 500);
+                });
     }
   });
 
