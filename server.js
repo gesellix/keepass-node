@@ -16,10 +16,10 @@
   var app = express();
   app.use(express.compress());
   app.use(express.bodyParser());
-  app.use(express.basicAuth(function (user, pass, callback) {
-    var isValid = (user === basicAuth.username && pass === basicAuth.password);
-    callback(null /* error */, isValid);
-  }));
+//  app.use(express.basicAuth(function (user, pass, callback) {
+//    var isValid = (user === basicAuth.username && pass === basicAuth.password);
+//    callback(null /* error */, isValid);
+//  }));
 
   var readKdbx = function (filename, password) {
     var deferred = q.defer();
