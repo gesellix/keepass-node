@@ -5,9 +5,9 @@
 		<OmitItemsWithDefaultValues>true</OmitItemsWithDefaultValues>
 	</Meta>
 	<Application>
-		<LastUpdateCheck>2013-11-12T21:17:05Z</LastUpdateCheck>
+		<LastUpdateCheck>2013-11-13T19:06:56Z</LastUpdateCheck>
 		<LastUsedFile>
-			<Path>../local/example.kdbx</Path>
+			<Path>..\local\example.kdbx</Path>
 			<CredProtMode>Obf</CredProtMode>
 			<CredSaveMode>NoSave</CredSaveMode>
 		</LastUsedFile>
@@ -15,14 +15,14 @@
 			<MaxItemCount>12</MaxItemCount>
 			<Items>
 				<ConnectionInfo>
-					<Path>../local/example.kdbx</Path>
+					<Path>..\local\example.kdbx</Path>
 					<CredProtMode>Obf</CredProtMode>
 					<CredSaveMode>NoSave</CredSaveMode>
 				</ConnectionInfo>
 			</Items>
 		</MostRecentlyUsed>
 		<WorkingDirectories>
-			<Item>Database@../local</Item>
+			<Item>Database@..\local</Item>
 		</WorkingDirectories>
 		<Start>
 			<CheckForUpdate>true</CheckForUpdate>
@@ -41,7 +41,7 @@
 		<Width>989</Width>
 		<Height>696</Height>
 		<SplitterHorizontalFrac>0.8313458</SplitterHorizontalFrac>
-		<SplitterVerticalFrac>0.248715311</SplitterVerticalFrac>
+		<SplitterVerticalFrac>0.247687563</SplitterVerticalFrac>
 		<Layout>Default</Layout>
 		<ToolBar />
 		<EntryView />
