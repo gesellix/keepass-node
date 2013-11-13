@@ -42,11 +42,11 @@ You should find the mentioned `example.kdbx` there. You can copy your keepass fi
 or create a symbolic link (Windows users may ignore that hint). Hit `CTRL-C` if KeePass-Node is still running.
 ````
 ~/keepass-node$ cd local
-~/keepass-node$ ln -s ~/path/to/my/keepass.kdbx keepass.kdbx
+~/keepass-node/local$ ln -s ~/path/to/my/keepass.kdbx keepass.kdbx
 ````
 Now start the server again (if not already running):
 ````
-~$ cd ..
+~~/keepass-node/local$ cd ..
 ~/keepass-node$ npm start
 ````
 Refresh your browser window and you should see your keepass.kdbx in the database dropdown list.
@@ -56,7 +56,7 @@ There already are some ideas on improving this little tool:
 * your ideas are welcome!
 * make some options configurable (e.g. basic auth)
 * add keyfile support
-* natively support SSL (use [stud](https://github.com/bumptech/stud)) for ssl support?)
+* natively support SSL (use [stud](https://github.com/bumptech/stud) for ssl support?)
 * use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/)
 * keepass write support
 
