@@ -1,6 +1,6 @@
 #KeePass-Node
 
-[Node.js](http://nodejs.org/) and [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) browser.
+[Node.js](http://nodejs.org/) with [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) browser.
 
 ## What?
 You should probably know about [KeePass](http://www.keepass.info/) as a tool to manage your passwords or
