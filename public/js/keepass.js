@@ -23,7 +23,6 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
 
   $scope.db = {};
   $scope.kdbxTree = null;
-  $scope.groups = {};
   $scope.groupEntries = [];
 
   var collectGroupsAsTree = function (groups) {
@@ -49,11 +48,15 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     $scope.messages = ["loading..."];
     kdbxBackendService.getEntries($scope.selectedDb, $scope.dbPassword)
         .then(function (success) {
+                $scope.errors = [];
                 $scope.messages = [];
-                $scope.messages.push("HTTP status: " + success.status);
+//                $scope.messages.push("HTTP status: " + success.status);
+                $scope.messages.push("db successfully loaded");
                 onDbLoaded(success.data);
               },
               function (error) {
+                $scope.messages = [];
+                $scope.errors = [];
                 $scope.errors.push("HTTP status: " + error.status);
                 $scope.errors.push(error.data);
               });
