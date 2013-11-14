@@ -47,7 +47,7 @@ or use another shell.
 ````
 Now start the server again (if not still running):
 ````
-~~/keepass-node/local$ cd ..
+~/keepass-node/local$ cd ..
 ~/keepass-node$ npm start
 ````
 Refresh your browser window and you should see your keepass.kdbx in the database dropdown list.
