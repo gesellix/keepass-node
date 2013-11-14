@@ -29,22 +29,23 @@ First, you need Node.js running on your server of choice and navigate to a suita
 ~/keepass-node$ npm start
 ````
 NPM should download a small part of the internet for you and start the KeePass-Node server on port 8888.
-You may already enter the URL into your browser like follows,
+You may now enter the URL into your browser like follows,
 just replace "localhost" with your hostname: [http://localhost:8888/](http://localhost:8888/).
 
-KeePass-Node already comes with an `example.kdbx` which should be the already selected database. You have
+KeePass-Node comes with an `example.kdbx` which should be the already selected database. You have
 to enter the keepass file password now, the default is `password`. After a click on `load`, you should
 see the familiar tree structure of keepass groups.
 
 ## How to provide your personal KeePass2 file
 Then you need to provide your keepass file. KeePass-Node expects any keepass files in the subfolder `./local/`.
 You should find the mentioned `example.kdbx` there. You can copy your keepass file to that folder
-or create a symbolic link (Windows users may ignore that hint). Hit `CTRL-C` if KeePass-Node is still running.
+or create a symbolic link (Windows users may ignore that hint). Hit `CTRL-C` if KeePass-Node is still running
+or use another shell.
 ````
 ~/keepass-node$ cd local
 ~/keepass-node/local$ ln -s ~/path/to/my/keepass.kdbx keepass.kdbx
 ````
-Now start the server again (if not already running):
+Now start the server again (if not still running):
 ````
 ~~/keepass-node/local$ cd ..
 ~/keepass-node$ npm start
