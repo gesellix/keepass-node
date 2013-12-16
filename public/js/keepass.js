@@ -33,7 +33,6 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
   };
 
   var onDbLoaded = function (db) {
-    console.log(db);
     $scope.db = db;
     $scope.groupsTree = collectGroupsAsTree(db.groups);
 //    $scope.groupsTree = db.groups;
