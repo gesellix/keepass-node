@@ -14,8 +14,8 @@
   };
 
   var app = express();
-  app.use(express.compress());
-  app.use(express.bodyParser());
+  app.use(require("compression")());
+  app.use(require("body-parser")());
 //  app.use(express.basicAuth(function (user, pass, callback) {
 //    var isValid = (user === basicAuth.username && pass === basicAuth.password);
 //    callback(null /* error */, isValid);
