@@ -66,7 +66,8 @@ function listFiles(client, authClient, callback) {
 function downloadFile(authClient, item, callback) {
   console.log('get file from "' + item.downloadUrl + '"...');
   var options = {
-    uri: item.downloadUrl
+    uri: item.downloadUrl,
+    encoding: null
   };
   authClient.request(options, callback);
 }
@@ -110,10 +111,9 @@ var updateKdbxFromDrive = function (req, res) {
 
                        var targetFilename = __dirname + '/local/download.kdbx';
                        var writeStream = fs.createWriteStream(targetFilename);
-                       downloadFile(oauth2Client, keepassFile, function (error, response, body) {
-                         console.log('got response');
-//                           fs.writeFileSync(targetFilename, body, 'binary');
-                         body.pipe(writeStream);
+                       downloadFile(oauth2Client, keepassFile, function (error, body, response) {
+                         console.log('got response with status code ' + response.statusCode);
+                         fs.writeFileSync(targetFilename, body);
 
                          console.log('return to client');
                          res.writeHeader(200, {"Content-Type": "application/json"});
