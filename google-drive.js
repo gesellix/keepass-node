@@ -74,6 +74,8 @@ function downloadFile(authClient, item, callback) {
 
 var updateKdbxFromDrive = function (req, res) {
 
+  var deferred = q.defer();
+
   var googleapisClientSecretDescriptionFilename = __dirname + '/local/googleapis_client_secret.json';
   if (fs.existsSync(googleapisClientSecretDescriptionFilename)) {
     var installedClient = require(googleapisClientSecretDescriptionFilename).installed;
@@ -107,17 +109,17 @@ var updateKdbxFromDrive = function (req, res) {
                        var keepassFile = _.find(result.items, function (item) {
                          return item.title == "keepass2_.kdbx";
                        });
-//                         console.log(keepassFile);
 
                        var targetFilename = __dirname + '/local/download.kdbx';
                        downloadFile(oauth2Client, keepassFile, function (error, body, response) {
                          console.log('got response with status code ' + response.statusCode);
-                         fs.writeFileSync(targetFilename, body);
-
-                         console.log('return to client');
-                         res.writeHeader(200, {"Content-Type": "application/json"});
-                         res.write(JSON.stringify(keepassFile));
-                         res.end();
+                         if (response.statusCode == 200) {
+                           fs.writeFileSync(targetFilename, body);
+                           deferred.resolve();
+                         }
+                         else {
+                           deferred.reject();
+                         }
                        });
                      });
                    });
@@ -125,5 +127,7 @@ var updateKdbxFromDrive = function (req, res) {
 
     getAccessToken(oauth2Client, req.query.code, handleAuthenticationResult);
   }
+
+  return deferred.promise;
 };
 module.exports = {updateKdbxFromDrive: updateKdbxFromDrive};

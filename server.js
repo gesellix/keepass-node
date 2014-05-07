@@ -74,8 +74,11 @@
                 });
     }
   });
-  app.get('/drive', function (req, res) {
-    googleDrive.updateKdbxFromDrive(req, res);
+  app.get('/update', function (req, res) {
+    googleDrive.updateKdbxFromDrive(req, res).then(function () {
+      console.log('return to client');
+      res.redirect('/')
+    });
   });
 
   app.listen(PORT, function () {
