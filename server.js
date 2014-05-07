@@ -6,6 +6,7 @@
   var _ = require('underscore');
   var keepassio = require('keepass.io');
   var q = require('q');
+  var googleDrive = require('./google-drive');
 
   var PORT = process.env.PORT || 8888;
   var basicAuth = {
@@ -72,6 +73,9 @@
                   res.send("problem occurred reading '" + req.params.filename + "': " + reason, 500);
                 });
     }
+  });
+  app.get('/drive', function (req, res) {
+    googleDrive.updateKdbxFromDrive(req, res);
   });
 
   app.listen(PORT, function () {
