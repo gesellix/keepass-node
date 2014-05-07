@@ -110,7 +110,6 @@ var updateKdbxFromDrive = function (req, res) {
 //                         console.log(keepassFile);
 
                        var targetFilename = __dirname + '/local/download.kdbx';
-                       var writeStream = fs.createWriteStream(targetFilename);
                        downloadFile(oauth2Client, keepassFile, function (error, body, response) {
                          console.log('got response with status code ' + response.statusCode);
                          fs.writeFileSync(targetFilename, body);
