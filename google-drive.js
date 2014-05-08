@@ -1,133 +1,201 @@
-"use strict";
+(function () {
+  "use strict";
 
-var fs = require('fs');
-var _ = require('underscore');
-var q = require('q');
-var googleapis = require('googleapis');
-var OAuth2Client = googleapis.OAuth2Client;
+  var fs = require('fs');
+  var _ = require('underscore');
+  var q = require('q');
+  var googleapis = require('googleapis');
 
-var oauth2Tokens = {
-};
+  var oauth2Client;
 
-function getAccessToken(oauth2Client, code, callback) {
-
-  if (!_.isEmpty(oauth2Tokens)) {
-    console.log('reusing tokens from memory');
-    oauth2Client.setCredentials(oauth2Tokens);
-    callback({});
-    return;
-  }
-
-  var tokensFilename = __dirname + '/local/googleapis_tokens.json';
-  if (fs.existsSync(tokensFilename)) {
-    console.log('reusing tokens from file');
-    oauth2Tokens = JSON.parse(fs.readFileSync(tokensFilename, 'utf8'));
-    oauth2Client.setCredentials(oauth2Tokens);
-    callback({});
-    return;
-  }
-
-  if (code) {
-    console.log('using code: "' + code + '"');
-    // request access token
-    oauth2Client.getToken(code, function (err, tokens) {
-      oauth2Tokens = tokens;
-      fs.writeFileSync(tokensFilename, JSON.stringify(oauth2Tokens), 'utf8');
-      // set tokens to the client
-      // TODO: tokens should be set by OAuth2 client.
-      console.log(tokens);
-      oauth2Client.setCredentials(oauth2Tokens);
-      callback({});
-    });
-    return;
-  }
-
-  if (_.isEmpty(oauth2Tokens)) {
-    // generate consent page url
-    var url = oauth2Client.generateAuthUrl({
-                                             access_type: 'offline', // will return a refresh token
-                                             scope: 'https://www.googleapis.com/auth/drive'
-                                           });
-
-    console.log('Visit the url: ', url);
-    callback({needsCode: true, codeUrl: url});
-    return;
-  }
-}
-
-function listFiles(client, authClient, callback) {
-  console.log('list files...');
-  client
-      .drive.files.list()
-      .withAuthClient(authClient)
-      .execute(callback);
-}
-
-function downloadFile(authClient, item, callback) {
-  console.log('get file from "' + item.downloadUrl + '"...');
-  var options = {
-    uri: item.downloadUrl,
-    encoding: null
+  var googleDriveMountPoint = '';
+  var googleDriveConfig = {
+    clientSecret: null,
+    fileTitle: 'keepass2_.kdbx',
+    targetFilename: __dirname + '/local/google-drive.kdbx',
+    clientSecretFilename: __dirname + '/local/googleapis_client_secret.json',
+    clientSecretType: 'web_localhost',
+//    clientSecretType: 'installed',
+    tokensFilename: __dirname + '/local/googleapis_tokens.json',
+    oauth2Tokens: {
+    }
   };
-  authClient.request(options, callback);
-}
 
-var updateKdbxFromDrive = function (req, res) {
+  var readAccessToken = function () {
+    if (!_.isEmpty(googleDriveConfig.oauth2Tokens)) {
+      console.log('reusing tokens from memory');
+      return googleDriveConfig.oauth2Tokens;
+    }
 
-  var deferred = q.defer();
+    if (fs.existsSync(googleDriveConfig.tokensFilename)) {
+      console.log('reading tokens from file');
+      googleDriveConfig.oauth2Tokens = JSON.parse(fs.readFileSync(googleDriveConfig.tokensFilename, 'utf8'));
+      return googleDriveConfig.oauth2Tokens;
+    }
 
-  var googleapisClientSecretDescriptionFilename = __dirname + '/local/googleapis_client_secret.json';
-  if (fs.existsSync(googleapisClientSecretDescriptionFilename)) {
-    var installedClient = require(googleapisClientSecretDescriptionFilename).installed;
-    var oauth2Client = new OAuth2Client(installedClient.client_id, installedClient.client_secret, installedClient.redirect_uris[0]);
+    return null;
+  };
 
-    var handleAuthenticationResult = function (result) {
-      if (result.needsCode) {
-        res.writeHeader(200, {"Content-Type": "text/html"});
-        res.write('<p>visit: <a href="' + result.codeUrl + '">' + result.codeUrl + '</a></p>');
-        res.end();
-        return;
+  var requestAccessToken = function (oauth2Client, code) {
+    var deferred = q.defer();
+
+    oauth2Client.getToken(code, function (err, tokens) {
+      if (err) {
+        deferred.reject(err);
       }
       else {
-        console.log('authenticated');
+        deferred.resolve(tokens);
       }
+    });
 
-      googleapis
-          .discover('drive', 'v2')
-          .execute(function (err, client) {
-                     if (err) {
-                       console.log('An error occured', err);
-                       return;
-                     }
+    return deferred.promise;
+  };
 
-                     listFiles(client, oauth2Client, function (err, result) {
-                       if (err) {
-                         console.log('An error occured', err);
-                         return;
-                       }
-                       console.log('files read from remote.');
-                       var keepassFile = _.find(result.items, function (item) {
-                         return item.title == "keepass2_.kdbx";
-                       });
+  var downloadFile = function (oauth2Client, item) {
+    var deferred = q.defer();
 
-                       var targetFilename = __dirname + '/local/download.kdbx';
-                       downloadFile(oauth2Client, keepassFile, function (error, body, response) {
-                         console.log('got response with status code ' + response.statusCode);
-                         if (response.statusCode == 200) {
-                           fs.writeFileSync(targetFilename, body);
-                           deferred.resolve();
-                         }
-                         else {
-                           deferred.reject();
-                         }
-                       });
-                     });
-                   });
+    console.log('get file from "' + item.downloadUrl + '"...');
+    var options = {
+      uri: item.downloadUrl,
+      encoding: null
     };
+    oauth2Client.request(options, function (error, body, response) {
+      console.log('got response with status code ' + response.statusCode);
+      if (response.statusCode == 200) {
+        fs.writeFileSync(googleDriveConfig.targetFilename, body);
+        deferred.resolve();
+      }
+      else {
+        deferred.reject();
+      }
+    });
 
-    getAccessToken(oauth2Client, req.query.code, handleAuthenticationResult);
-  }
+    return deferred.promise;
+  };
 
-  return deferred.promise;
-};
-module.exports = {updateKdbxFromDrive: updateKdbxFromDrive};
+  var discoverGoogleDriveClient = function () {
+    var deferred = q.defer();
+
+    googleapis
+        .discover('drive', 'v2')
+        .execute(function (err, client) {
+                   if (err) {
+                     console.log('An error occured', err);
+                     deferred.reject(err);
+                   }
+                   else {
+                     deferred.resolve(client);
+                   }
+                 });
+
+    return deferred.promise;
+  };
+
+  var readKeepass2File = function (client, oauth2Client) {
+    var deferred = q.defer();
+
+    client
+        .drive.files.list()
+        .withAuthClient(oauth2Client)
+        .execute(function (err, result) {
+                   if (err) {
+                     console.log('An error occured', err);
+                     deferred.reject(err);
+                   }
+                   else {
+                     console.log('files read from remote.');
+//                     console.log(result.items);
+                     var keepassFile = _.find(result.items, function (item) {
+                       return item.title == googleDriveConfig.fileTitle;
+                     });
+                     deferred.resolve(keepassFile);
+                   }
+                 });
+
+    return deferred.promise;
+  };
+
+  var updateKdbxFromDrive = function () {
+    oauth2Client.setCredentials(googleDriveConfig.oauth2Tokens);
+    return discoverGoogleDriveClient().then(function (client) {
+      readKeepass2File(client, oauth2Client).then(function (keepass2File) {
+        console.log('download ' + JSON.stringify(keepass2File));
+        downloadFile(oauth2Client, keepass2File);
+      });
+    });
+  };
+
+  var middleware = function (req, res, next) {
+//    console.log('%s %s (%s)', req.method, req.url, googleDriveMountPoint + req.path);
+
+    if (req.path == '/oauth2callback' && req.query.code) {
+      console.log('request access token...');
+      requestAccessToken(oauth2Client, req.query.code).then(function (result) {
+        googleDriveConfig.oauth2Tokens = result;
+        fs.writeFileSync(googleDriveConfig.tokensFilename, JSON.stringify(googleDriveConfig.oauth2Tokens), 'utf8');
+
+        res.redirect(googleDriveMountPoint);
+      }, function (reason) {
+        console.log('could not request access token! reason: ' + JSON.stringify(reason));
+        res.writeHeader(500, {"Content-Type": "text/html"});
+        res.write('<p>could not request access token! reason: ' + JSON.stringify(reason) + '</p>');
+        res.end();
+      });
+    }
+    else if (req.path == '/') {
+      if (!_.isEmpty(googleDriveConfig.oauth2Tokens)) {
+        console.log('updateKdbxFromDrive...');
+        updateKdbxFromDrive().then(function () {
+          res.redirect('/');
+        }, function (reason) {
+          console.log('updateKdbxFromDrive() failed! reason: ' + JSON.stringify(reason));
+          res.writeHeader(500, {"Content-Type": "text/html"});
+          res.write('<p>updateKdbxFromDrive() failed! reason: ' + JSON.stringify(reason) + '</p>');
+          res.end();
+        });
+      }
+      else {
+        console.log('need to request access token...');
+        var opts = {
+          access_type: 'offline', // will return a refresh token
+          // see https://developers.google.com/drive/web/scopes
+//          scope: 'https://www.googleapis.com/auth/drive'
+          scope: 'https://www.googleapis.com/auth/drive.readonly'
+        };
+        var authUrl = oauth2Client.generateAuthUrl(opts);
+        res.redirect(authUrl);
+      }
+    }
+    else {
+      console.log('cannot handle "' + req.path + '"');
+      next();
+    }
+  };
+
+  var initialize = function (mountPoint, config) {
+    googleDriveMountPoint = mountPoint;
+    googleDriveConfig = _.extend(googleDriveConfig, config);
+
+    if (!googleDriveConfig.clientSecret) {
+      if (fs.existsSync(googleDriveConfig.clientSecretFilename)) {
+        var clientSecret = require(googleDriveConfig.clientSecretFilename)[googleDriveConfig.clientSecretType];
+        googleDriveConfig.clientSecret = clientSecret;
+        oauth2Client = new googleapis.OAuth2Client(clientSecret.client_id, clientSecret.client_secret, clientSecret.redirect_uris[0]);
+      }
+    }
+
+    readAccessToken();
+    console.log('initialized config: ' + JSON.stringify(googleDriveConfig, null, 2));
+  };
+
+  module.exports = function (mountPoint, config) {
+
+    initialize(mountPoint, config);
+
+    if (!googleDriveConfig.clientSecret || !oauth2Client) {
+      console.log('google-drive middleware initialization failed!');
+    }
+
+    return middleware;
+  };
+})();

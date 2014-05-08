@@ -6,21 +6,12 @@
   var _ = require('underscore');
   var keepassio = require('keepass.io');
   var q = require('q');
-  var googleDrive = require('./google-drive');
 
   var PORT = process.env.PORT || 8888;
   var basicAuth = {
     username: 'username',
     password: 'password'
   };
-
-  var app = express();
-  app.use(require("compression")());
-  app.use(require("body-parser")());
-//  app.use(express.basicAuth(function (user, pass, callback) {
-//    var isValid = (user === basicAuth.username && pass === basicAuth.password);
-//    callback(null /* error */, isValid);
-//  }));
 
   var readKdbx = function (filename, password) {
     var deferred = q.defer();
@@ -40,6 +31,17 @@
   var endsWith = function (string, suffix) {
     return string && string.match(suffix + "$") == suffix
   };
+
+  var app = express();
+
+  app.use(require("compression")());
+  app.use(require("body-parser")());
+//  app.use(express.basicAuth(function (user, pass, callback) {
+//    var isValid = (user === basicAuth.username && pass === basicAuth.password);
+//    callback(null /* error */, isValid);
+//  }));
+
+//  app.use('/update', require('./google-drive')('/update'));
 
   app.get('/', function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
@@ -73,12 +75,6 @@
                   res.send("problem occurred reading '" + req.params.filename + "': " + reason, 500);
                 });
     }
-  });
-  app.get('/update', function (req, res) {
-    googleDrive.updateKdbxFromDrive(req, res).then(function () {
-      console.log('return to client');
-      res.redirect('/')
-    });
   });
 
   app.listen(PORT, function () {
