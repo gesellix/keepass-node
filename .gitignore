@@ -1,6 +1,8 @@
 .idea/
 *.iml
 
+google-drive-config.js
+
 node_modules/
 
 local/*

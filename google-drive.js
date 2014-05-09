@@ -12,7 +12,7 @@
   var googleDriveConfig = {
     clientSecret: null,
     fileTitle: 'your_keepass_db.kdbx',
-    targetFilename: __dirname + '/local/your_keepass_db.kdbx',
+    targetFilename: __dirname + '/local/google-drive.kdbx',
     clientSecretFilename: __dirname + '/local/googleapis_client_secret.json',
     clientSecretType: 'web',
 //    clientSecretType: 'installed',

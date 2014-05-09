@@ -43,7 +43,7 @@
 //  }));
 
   if (SYNC_WITH_GOOGLE_DRIVE) {
-    app.use('/update', require('./google-drive')('/update'));
+    app.use('/update', require('./google-drive')('/update', require('./google-drive-config')));
   }
 
   app.get('/', function (req, res) {
