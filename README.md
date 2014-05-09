@@ -25,12 +25,25 @@ First, you need Node.js running on your server of choice and navigate to a suita
 ````
 ~$ git clone https://github.com/gesellix/keepass-node.git
 ~$ cd keepass-node
+````
+You'll find a config template `keepass-node-config.template.js` where you can configure port (default 8443), https (optional),
+basic authentication (optional) and Google Drive sync (optional). Optional features are disabled by default.
+To give KeePass-Node a minimal config you need to create a file `keepass-node-config.js` in the project's root
+folder and paste at least something like this:
+````
+module.exports = {
+  "port": 8443
+};
+````
+
+After changing its content to fit your needs, you can finish the installation and start the keepass-node server:
+````
 ~/keepass-node$ npm install
 ~/keepass-node$ npm start
 ````
-NPM should download a small part of the internet for you and start the KeePass-Node server on port 8888.
+NPM should download a small part of the internet for you and start the KeePass-Node server on the configured port.
 You may now enter the URL into your browser like follows,
-just replace "localhost" with your hostname: [http://localhost:8888/](http://localhost:8888/).
+just replace "localhost" with your hostname: [http://localhost:8443/](http://localhost:8443/).
 
 KeePass-Node comes with an `example.kdbx` which should be the already selected database. You have
 to enter the keepass file password now, the default is `password`. After a click on `load`, you should

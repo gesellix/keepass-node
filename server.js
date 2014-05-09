@@ -79,7 +79,7 @@
     }
   });
 
-  if (config.https.enabled) {
+  if (config.https && config.https.enabled) {
     https.createServer(config.https.options, app).listen(config.port);
   }
   else {
