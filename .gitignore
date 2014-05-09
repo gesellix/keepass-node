@@ -1,9 +1,12 @@
 .idea/
 *.iml
 
-google-drive-config.js
+keepass-node-config.js
 
 node_modules/
+
+certs/*
+!certs/.gitkeep
 
 local/*
 !local/.gitkeep

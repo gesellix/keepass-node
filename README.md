@@ -57,7 +57,6 @@ There already are some ideas on improving this little tool:
 * your ideas are welcome!
 * make some options configurable (e.g. basic auth)
 * add keyfile support
-* natively support SSL (use [stud](https://github.com/bumptech/stud) for ssl support?)
 * use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/)
 * keepass write support
 

@@ -2,17 +2,13 @@
   "use strict";
 
   var express = require('express');
+  var https = require('https');
   var fs = require('fs');
   var _ = require('underscore');
   var keepassio = require('keepass.io');
   var q = require('q');
 
-  var PORT = process.env.PORT || 8888;
-  var SYNC_WITH_GOOGLE_DRIVE = process.env.SYNC_WITH_GOOGLE_DRIVE || false;
-  var basicAuth = {
-    username: 'username',
-    password: 'password'
-  };
+  var config = require('./keepass-node-config');
 
   var readKdbx = function (filename, password) {
     var deferred = q.defer();
@@ -37,13 +33,16 @@
 
   app.use(require("compression")());
   app.use(require("body-parser")());
-//  app.use(express.basicAuth(function (user, pass, callback) {
-//    var isValid = (user === basicAuth.username && pass === basicAuth.password);
-//    callback(null /* error */, isValid);
-//  }));
 
-  if (SYNC_WITH_GOOGLE_DRIVE) {
-    app.use('/update', require('./google-drive')('/update', require('./google-drive-config')));
+  if (config.basicAuth && config.basicAuth.enabled) {
+    app.use(express.basicAuth(function (user, pass, callback) {
+      var isValid = (user === basicAuth.username && pass === basicAuth.password);
+      callback(null /* error */, isValid);
+    }));
+  }
+
+  if (config.googleDrive && config.googleDrive.enabled) {
+    app.use('/update', require('./google-drive')('/update', config.googleDrive));
   }
 
   app.get('/', function (req, res) {
@@ -80,7 +79,11 @@
     }
   });
 
-  app.listen(PORT, function () {
-    console.log('server is listening on port ' + PORT);
-  });
+  if (config.https.enabled) {
+    https.createServer(config.https.options, app).listen(config.port);
+  }
+  else {
+    app.listen(config.port);
+  }
+  console.log('server is listening on port ' + config.port);
 })();
