@@ -8,6 +8,7 @@
   var q = require('q');
 
   var PORT = process.env.PORT || 8888;
+  var SYNC_WITH_GOOGLE_DRIVE = process.env.SYNC_WITH_GOOGLE_DRIVE || false;
   var basicAuth = {
     username: 'username',
     password: 'password'
@@ -41,7 +42,9 @@
 //    callback(null /* error */, isValid);
 //  }));
 
-//  app.use('/update', require('./google-drive')('/update'));
+  if (SYNC_WITH_GOOGLE_DRIVE) {
+    app.use('/update', require('./google-drive')('/update'));
+  }
 
   app.get('/', function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
