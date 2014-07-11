@@ -1,44 +1,37 @@
 <div class="kdbxEntry">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{kdbxEntry.title}}</a>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{getTitle()}}</a>
         </h4>
     </div>
     <div id="collapse{{kdbxEntryIndex}}" class="panel-collapse collapse">
         <div class="panel-body">
             <dl class="dl-horizontal">
                 <dt>Title</dt>
-                <dd>{{kdbxEntry.title}}</dd>
+                <dd>{{getTitle()}}</dd>
                 <dt>URL</dt>
-                <dd><a ng-href="{{kdbxEntry.url}}" target="_blank">{{kdbxEntry.url}}</a></dd>
+                <dd><a ng-href="{{getURL()}}" target="_blank">{{getURL()}}</a></dd>
                 <dt>UserName</dt>
-                <dd>{{kdbxEntry.username}}</dd>
+                <dd>{{getUserName()}}</dd>
                 <dt>Password</dt>
                 <dd>
                     <button type="button"
                             class="btn btn-default btn-sm copy-password-btn"
-                            data-clipboard-text="{{kdbxEntry.password}}">
+                            data-clipboard-text="{{getPassword()}}">
                         <span class="glyphicon glyphicon-share"></span>
                     </button>
                     <button type="button"
                             class="btn btn-default btn-sm"
-                            ng-show="!showPassword"
                             ng-click="showPassword = !showPassword">
-                        <span class="glyphicon glyphicon-eye-open"></span>
-                    </button>
-                    <button type="button"
-                            class="btn btn-default btn-sm"
-                            ng-show="showPassword"
-                            ng-click="showPassword = !showPassword">
-                        <span class="glyphicon glyphicon-eye-close"></span>
+                        <span class="glyphicon" ng-class="showPassword ? 'glyphicon-eye-close' : 'glyphicon-eye-open'"></span>
                     </button>
                     <input ng-readonly="true" ng-show="showPassword"
                            style="display: inline-block;"
-                           ng-value="kdbxEntry.password"/>
-                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{kdbxEntry.password}}</div>-->
+                           ng-value="getPassword()"/>
+                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{getPassword()}}</div>-->
                 </dd>
                 <dt>Notes</dt>
-                <dd>{{kdbxEntry.notes}}</dd>
+                <dd>{{getNotes()}}</dd>
             </dl>
         </div>
     </div>

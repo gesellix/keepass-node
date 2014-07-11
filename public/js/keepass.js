@@ -4,10 +4,10 @@ var keepass = angular.module('keepass', ['init', 'angularTreeview', 'keepass-ent
 
 keepass.service('kdbxBackendService', function ($http) {
   this.getDatabases = function () {
-    return $http({ "method": "get", "url": '/databases' });
+    return $http({"method": "get", "url": '/databases'});
   };
   this.getEntries = function (filename, password) {
-    return $http({ "method": "post", "url": '/databases/' + filename, data: {password: password} });
+    return $http({"method": "post", "url": '/databases/' + filename, data: {password: password}});
   };
 });
 
@@ -25,21 +25,13 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
   $scope.kdbxTree = null;
   $scope.groupEntries = [];
 
-  var collectGroupsAsTree = function (groups) {
-    return _.reduce(groups, function (acc, group, key) {
-      acc.push({label: group.name, id: key, children: collectGroupsAsTree(group.groups), group: group});
-      return acc;
-    }, []);
-  };
-
   var onDbLoaded = function (db) {
     $scope.db = db;
-    $scope.groupsTree = collectGroupsAsTree(db.groups);
-//    $scope.groupsTree = db.groups;
+    $scope.groupsTree = [db.Root.Group];
   };
 
   var onGroupSelected = function (group) {
-    $scope.groupEntries = group.entries;
+    $scope.groupEntries = group.Entry;
   };
 
   $scope.loadEntries = function () {
@@ -71,8 +63,7 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
 
   init.watchAfterInit($scope, 'kdbxTree.currentNode', function () {
     if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
-      onGroupSelected($scope.kdbxTree.currentNode.group);
-//      onGroupSelected($scope.kdbxTree.currentNode);
+      onGroupSelected($scope.kdbxTree.currentNode);
     }
   }, false)
 });

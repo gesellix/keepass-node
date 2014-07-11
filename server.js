@@ -12,14 +12,15 @@
 
   var readKdbx = function (filename, password) {
     var deferred = q.defer();
-    var db = new keepassio();
-    db.setCredentials({ password: password /*, keyfile: 'my.key'*/ });
-    db.load(filename, function (error, data) {
+    var db = new keepassio.Database();
+    db.addCredential(new keepassio.Credentials.Password(password));
+//    db.addCredential(new keepassio.Credentials.Keyfile('my.key');
+    db.loadFile(filename, function (error, api) {
       if (error) {
         deferred.reject(error);
       }
       else {
-        deferred.resolve(data);
+        deferred.resolve(api);
       }
     });
     return deferred.promise;
@@ -32,7 +33,7 @@
   var app = express();
 
   app.use(require("compression")());
-  app.use(require("body-parser")());
+  app.use(require("body-parser").json());
 
   if (config.basicAuth && config.basicAuth.enabled) {
     app.use(express.basicAuth(function (user, pass, callback) {
@@ -72,7 +73,7 @@
       var reqBody = req.body;
       q.when(readKdbx(filename, reqBody.password))
           .then(function (result) {
-                  res.json(result);
+                        res.json(result.getRaw().KeePassFile);
                 }, function (reason) {
                   res.send("problem occurred reading '" + req.params.filename + "': " + reason, 500);
                 });

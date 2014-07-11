@@ -7,12 +7,12 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "body-parser": "^1.0.2",
-    "compression": "^1.0.2",
-    "express": "^4.1.1",
-    "googleapis": "^0.7.0",
-    "keepass.io": "^0.2.8",
-    "q": "^1.0.1",
+    "body-parser": "^1.4.3",
+    "compression": "^1.0.8",
+    "express": "^4.5.1",
+    "googleapis": "^0.8.0",
+    "keepass.io": "^1.0.1",
+    "q": "^2.0.2",
     "underscore": "^1.6.0"
   }
 }
