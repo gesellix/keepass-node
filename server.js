@@ -47,7 +47,7 @@
   }
 
   app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public/index.html');
   });
   app.get(/index.html/, function (req, res) {
     res.sendfile(__dirname + '/public/index.html');
