@@ -1,18 +1,17 @@
 FROM gesellix/node
 
-RUN mkdir -p /opt/keepass-node
+RUN mkdir -p /opt/keepass/{certs,local}
 
-ADD ./package.json /opt/keepass-node/package.json
-RUN cd /opt/keepass-node && /opt/node/bin/npm install
+ADD ./package.json /opt/keepass/package.json
+RUN cd /opt/keepass && /opt/node/bin/npm install
 
-ADD ./local /opt/keepass-node/
-ADD ./public /opt/keepass-node/
-ADD ./README.md /opt/keepass-node/
-ADD ./google-drive.js /opt/keepass-node/
-ADD ./keepass-node-config.template.js /opt/keepass-node/
-ADD ./server.js /opt/keepass-node/
+ADD ./public /opt/keepass/
+ADD ./README.md /opt/keepass/
+ADD ./google-drive.js /opt/keepass/
+ADD ./keepass-node-config.template.js /opt/keepass/
+ADD ./server.js /opt/keepass/
 
-WORKDIR /opt/keepass-node
+WORKDIR /opt/keepass
 
 # using the volumes with a dedicated data container:
 #  docker run -d -v /opt/ghost/content/data -v /opt/ghost/content/images --name ghost-data ubuntu:14.04 true
