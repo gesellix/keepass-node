@@ -1,5 +1,7 @@
 FROM node:0.10
 
+RUN apt-get update && apt-get install -y libcrypto++-dev libcrypto++-utils
+
 RUN mkdir -p /opt/keepass/{certs,local}
 
 ADD ./package.json /opt/keepass/package.json
