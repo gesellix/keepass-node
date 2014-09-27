@@ -1,9 +1,9 @@
-FROM gesellix/node
+FROM node:0.10
 
 RUN mkdir -p /opt/keepass/{certs,local}
 
 ADD ./package.json /opt/keepass/package.json
-RUN cd /opt/keepass && /opt/node/bin/npm install
+RUN cd /opt/keepass && npm install
 
 ADD ./public /opt/keepass/
 ADD ./README.md /opt/keepass/
@@ -27,4 +27,4 @@ WORKDIR /opt/keepass
 
 EXPOSE 443
 
-CMD ["/opt/node/bin/npm", "start"]
+CMD ["npm", "start"]
