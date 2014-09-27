@@ -16,7 +16,7 @@
     "compression": "^1.1.0",
     "express": "^4.9.5",
     "googleapis": "^1.0.14",
-    "keepass.io": "^1.0.5",
+    "keepass.io": "git://github.com/NeoXiD/keepass.io.git#feature/basic-api",
     "q": "^1.0.1",
     "underscore": "^1.7.0"
   },
