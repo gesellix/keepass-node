@@ -50,7 +50,7 @@
     res.sendFile(__dirname + '/public/index.html');
   });
   app.get(/index.html/, function (req, res) {
-    res.sendfile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public/index.html');
   });
   app.get(/(css|js|templates)\/(.+)/, function (req, res, next) {
     express.static(__dirname + "/public")(req, res, next)
