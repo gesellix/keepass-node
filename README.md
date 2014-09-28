@@ -2,6 +2,8 @@
 
 [Node.js](http://nodejs.org/) with [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) browser.
 
+[![Coverage Status](https://coveralls.io/repos/gesellix/keepass-node/badge.png)](https://coveralls.io/r/gesellix/keepass-node)
+
 ## What?
 You should probably know about [KeePass](http://www.keepass.info/) as a tool to manage your passwords or
 other secrets in an encrypted file. Since the default tool to edit and view your passwords is based on .NET

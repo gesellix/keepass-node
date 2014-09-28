@@ -4,7 +4,7 @@
   var fs = require('fs');
   var _ = require('underscore');
   var q = require('q');
-  var googleapis = require('googleapis');
+  var google = require('googleapis');
 
   var oauth2Client;
 
@@ -17,8 +17,7 @@
     clientSecretType: 'web',
 //    clientSecretType: 'installed',
     tokensFilename: __dirname + '/local/googleapis_tokens.json',
-    oauth2Tokens: {
-    }
+    oauth2Tokens: {}
   };
 
   var readAccessToken = function () {
@@ -70,23 +69,11 @@
     return deferred.promise;
   };
 
-  var discoverGoogleDriveClient = function () {
+  var readKeepass2File = function (oauth2Client) {
     var deferred = q.defer();
 
-    googleapis
-        .discover('drive', 'v2')
-        .execute(function (err, client) {
-                       err ? deferred.reject(err) : deferred.resolve(client);
-                     });
-
-    return deferred.promise;
-  };
-
-  var readKeepass2File = function (client, oauth2Client) {
-    var deferred = q.defer();
-
-    client
-        .drive.files.list()
+    var drive = google.drive('v2');
+    drive.files.list()
         .withAuthClient(oauth2Client)
         .execute(function (err, result) {
                    if (err) {
@@ -105,10 +92,8 @@
 
   var updateKdbxFromDrive = function () {
     oauth2Client.setCredentials(googleDriveConfig.oauth2Tokens);
-    return discoverGoogleDriveClient().then(function (client) {
-      readKeepass2File(client, oauth2Client).then(function (keepass2File) {
-        downloadFile(oauth2Client, keepass2File);
-      });
+    return readKeepass2File(oauth2Client).then(function (keepass2File) {
+      downloadFile(oauth2Client, keepass2File);
     });
   };
 
@@ -163,7 +148,8 @@
       }
     }
     if (googleDriveConfig.clientSecret) {
-      oauth2Client = new googleapis.OAuth2Client(
+      var OAuth2 = google.auth.OAuth2;
+      oauth2Client = new OAuth2(
           googleDriveConfig.clientSecret.client_id,
           googleDriveConfig.clientSecret.client_secret,
           googleDriveConfig.clientSecret.redirect_uris[0]);

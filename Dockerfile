@@ -1,6 +1,6 @@
 FROM node:0.10
 
-RUN apt-get update && apt-get install -y libcrypto++-dev libcrypto++-utils
+RUN apt-get update && apt-get install -y libcrypto++-dev
 
 RUN mkdir -p /opt/keepass/{certs,local}
 

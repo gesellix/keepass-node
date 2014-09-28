@@ -1,34 +1,11 @@
 (function () {
   "use strict";
 
+  var config = require('./keepass-node-config');
+  var keepass = require('./lib').Keepass(__dirname + '/local/');
+
   var express = require('express');
   var https = require('https');
-  var fs = require('fs');
-  var _ = require('underscore');
-  var keepassio = require('keepass.io');
-  var q = require('q');
-
-  var config = require('./keepass-node-config');
-
-  var readKdbx = function (filename, password) {
-    var deferred = q.defer();
-    var db = new keepassio.Database();
-    db.addCredential(new keepassio.Credentials.Password(password));
-//    db.addCredential(new keepassio.Credentials.Keyfile('my.key');
-    db.loadFile(filename, function (error, api) {
-      if (error) {
-        deferred.reject(error);
-      }
-      else {
-        deferred.resolve(api);
-      }
-    });
-    return deferred.promise;
-  };
-
-  var endsWith = function (string, suffix) {
-    return string && string.match(suffix + "$") == suffix
-  };
 
   var app = express();
 
@@ -57,26 +34,24 @@
   });
 
   app.get('/databases', function (req, res) {
-    fs.readdir(__dirname + '/local/', function (err, filenames) {
-      var databases = _.filter(filenames, function (filename) {
-        return endsWith(filename, '.kdbx');
-      });
-      res.json({'databases': databases});
+    keepass.getDatabaseNames().then(function (result) {
+      res.json(result);
+    }, function (reason) {
+      res.send("error reading database list: " + reason, 500);
     });
   });
   app.post('/databases/:filename', function (req, res) {
-    var filename = __dirname + '/local/' + req.params.filename;
-    if (!fs.existsSync(filename)) {
-      res.send("file '" + req.params.filename + "' doesn't exist", 404);
+    var databaseName = req.params.filename;
+    if (!keepass.exists(databaseName)) {
+      res.send("database '" + databaseName + "' doesn't exist", 404);
     }
     else {
-      var reqBody = req.body;
-      q.when(readKdbx(filename, reqBody.password))
-          .then(function (result) {
-                        res.json(result.getRaw().KeePassFile);
-                }, function (reason) {
-                  res.send("problem occurred reading '" + req.params.filename + "': " + reason, 500);
-                });
+      var password = req.body.password;
+      keepass.getDatabase(databaseName, password).then(function (result) {
+        res.json(result);
+      }, function (reason) {
+        res.send("problem occurred reading '" + databaseName + "': " + reason, 500);
+      });
     }
   });
 

@@ -1,0 +1,2 @@
+The password for the example.kdbx is:
+password

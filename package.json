@@ -6,17 +6,25 @@
     "type": "git",
     "url": "https://github.com/gesellix/keepass-node.git"
   },
-  "main": "server.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node ./server.js",
+    "test": "mocha --reporter spec"
   },
   "dependencies": {
-    "body-parser": "^1.4.3",
-    "compression": "^1.0.8",
-    "express": "^4.5.1",
-    "googleapis": "^0.8.0",
+    "body-parser": "^1.9.0",
+    "compression": "^1.1.0",
+    "express": "^4.9.5",
+    "googleapis": "^1.0.14",
     "keepass.io": "^1.0.5",
-    "q": "^2.0.2",
-    "underscore": "^1.6.0"
+    "q": "^1.0.1",
+    "underscore": "^1.7.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "chai-as-promised": "^4.1.1",
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.2",
+    "mocha": "^1.21.4"
   }
 }
