@@ -2,7 +2,8 @@
 
 [Node.js](http://nodejs.org/) with [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) browser.
 
-[![Coverage Status](https://coveralls.io/repos/gesellix/keepass-node/badge.png)](https://coveralls.io/r/gesellix/keepass-node)
+[![Build Status](https://travis-ci.org/gesellix/keepass-node.svg?branch=master)](https://travis-ci.org/gesellix/keepass-node)
+[![Coverage Status](https://coveralls.io/repos/gesellix/keepass-node/badge.png?branch=master)](https://coveralls.io/r/gesellix/keepass-node?branch=master)
 
 ## What?
 You should probably know about [KeePass](http://www.keepass.info/) as a tool to manage your passwords or
@@ -13,7 +14,7 @@ or a wrong platform (Mono needs to be installed on Linux systems).
 KeePass-Node is based on the idea of [BrowsePass](http://bitbucket.org/namn/browsepass), which helps you
 to open a file from your current filesystem or from a URL by using only browser based libraries.
 
-While it's a great step forward to use a browser based KeePass reader, ~~I don't want to save my keepass file
+While it's a great step forward to use a browser based KeePass reader, I don't want to ~~save my keepass file
 in any cloud~~ (I guess I changed my mind - see below for Google Drive sync) or keep it with me on a USB stick all the time.
 I expect to mostly have internet access, so what about saving my keepass file on my private server
 and access it by a tool like BrowserPass?
@@ -101,9 +102,9 @@ A browser refresh later, and you can choose the updated `google-drive.kdbx` from
 ## Next
 There already are some ideas on improving this little tool:
 * your ideas are welcome!
+* keepass write support (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
 * add keyfile support
 * use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/)
-* keepass write support (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
 
 ## Technical details
 As mentioned above I wanted to use the BrowserPass concept to read `.kdbx` files. Well, I tried to use its code and converted it to a little
