@@ -2,8 +2,8 @@
 
 [Node.js](http://nodejs.org/) with [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) browser.
 
-[![Build Status](https://travis-ci.org/gesellix/keepass-node.svg?branch=master)](https://travis-ci.org/gesellix/keepass-node)
-[![Coverage Status](https://coveralls.io/repos/gesellix/keepass-node/badge.png?branch=master)](https://coveralls.io/r/gesellix/keepass-node?branch=master)
+[![Build Status](https://travis-ci.org/gesellix/keepass-node.svg?branch=write-support)](https://travis-ci.org/gesellix/keepass-node)
+[![Coverage Status](https://coveralls.io/repos/gesellix/keepass-node/badge.png?branch=write-support)](https://coveralls.io/r/gesellix/keepass-node?branch=write-support)
 
 ## What?
 You should probably know about [KeePass](http://www.keepass.info/) as a tool to manage your passwords or
