@@ -2,7 +2,8 @@
   "use strict";
 
   var config = require('./keepass-node-config');
-  var keepass = require('./lib').Keepass(__dirname + '/local/');
+  var keepassLib = require('./lib');
+  var keepass = keepassLib.Keepass(__dirname + '/local/');
 
   var express = require('express');
   var https = require('https');
@@ -20,7 +21,8 @@
   }
 
   if (config.googleDrive && config.googleDrive.enabled) {
-    app.use('/update', require('./google-drive')('/update', config.googleDrive));
+    var googleDrive = keepassLib.GoogleDrive('/update', config.googleDrive);
+    app.use('/update', googleDrive);
   }
 
   app.get('/', function (req, res) {
