@@ -6,7 +6,6 @@
   var keepass = keepassLib.Keepass(__dirname + '/local/');
 
   var express = require('express');
-  var https = require('https');
 
   var app = express();
 
@@ -49,7 +48,7 @@
     }
     else {
       var password = req.body.password;
-      keepass.getDatabase(databaseName, password).then(function (result) {
+      keepass.getDatabaseRaw(databaseName, password).then(function (result) {
         res.json(result);
       }, function (reason) {
         res.send("problem occurred reading '" + databaseName + "': " + reason, 500);
@@ -58,6 +57,7 @@
   });
 
   if (config.https && config.https.enabled) {
+    var https = require('https');
     https.createServer(config.https.options, app).listen(config.port);
   }
   else {
