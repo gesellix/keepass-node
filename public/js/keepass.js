@@ -37,6 +37,8 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
   $scope.loadEntries = function () {
     $scope.errors = [];
     $scope.messages = ["loading..."];
+    $scope.groupsTree = [];
+    $scope.groupEntries = [];
     kdbxBackendService.getEntries($scope.selectedDb, $scope.dbPassword)
         .then(function (success) {
                 $scope.errors = [];
