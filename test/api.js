@@ -117,4 +117,40 @@ describe('keepass api', function () {
       });
     });
   });
+
+  describe('Reading group entries', function () {
+
+    afterEach(function (done) {
+      done();
+    });
+
+    describe('with a missing password', function () {
+      it('should be rejected', function () {
+        return keepass.getGroupEntries('example.kdbx').should.be.rejectedWith("Expected `rawPassword` to be a string");
+      });
+    });
+
+    describe('with an invalid password', function () {
+      it('should be rejected', function () {
+        return keepass.getGroupEntries('example.kdbx', 'some bad password').should.be.rejectedWith("Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
+      });
+    });
+
+    describe('with a missing groupId', function () {
+      it('should be rejected', function () {
+        return keepass.getGroupEntries('example.kdbx', 'password').should.be.rejectedWith("Expected `groupUuid` to be a string");
+      });
+    });
+
+    describe('with a valid password', function () {
+      it('should return all group entries', function () {
+        var entries = keepass.getGroupEntries('example.kdbx', 'password', 'n3rnRvvOF0SvPriiFXr+Tg==');
+        return q.all([
+                       entries.should.eventually.have.property("length", 2),
+                       entries.should.eventually.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg=='),
+                       entries.should.eventually.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==')
+                     ]);
+      });
+    });
+  });
 });
