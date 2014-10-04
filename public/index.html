@@ -12,16 +12,16 @@
             env: "production"  // or "development"
         };
     </script>
-    <script src="js/less/less-1.5.0.min.js" type="text/javascript"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" type="text/javascript"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="js/less/less-1.7.5.min.js" type="text/javascript"></script>
+    <script src="js/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="js/angular/angular.min.js"></script>
     <script src="css/bootstrap/js/transition.js" type="text/javascript"></script>
     <script src="css/bootstrap/js/collapse.js" type="text/javascript"></script>
 
     <script src="js/zeroclipboard/ZeroClipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        ZeroClipboard.setDefaults({ moviePath: '//' + document.location.host + '/js/zeroclipboard/ZeroClipboard.swf' });
+        ZeroClipboard.setDefaults({moviePath: '//' + document.location.host + '/js/zeroclipboard/ZeroClipboard.swf'});
     </script>
 
     <script src="js/init.js" type="text/javascript"></script>
@@ -81,12 +81,12 @@
                             </form>
                         </div>
                         <div class="col-xs-3">
-                            <div class="alert alert-info" ng-show="messages">
+                            <div class="alert alert-info" ng-show="messages.length">
                                 <ul class="list-group">
                                     <li ng-repeat="message in messages" class="list-group-item">{{message}}</li>
                                 </ul>
                             </div>
-                            <div class="alert alert-danger" ng-show="errors">
+                            <div class="alert alert-danger" ng-show="errors.length">
                                 <ul class="list-group">
                                     <li ng-repeat="error in errors" class="list-group-item">{{error}}</li>
                                 </ul>
