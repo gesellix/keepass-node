@@ -55,6 +55,35 @@
       });
     }
   });
+  app.post('/:filename/groups', function (req, res) {
+    var databaseName = req.params.filename;
+    if (!keepass.exists(databaseName)) {
+      res.send("database '" + databaseName + "' doesn't exist", 404);
+    }
+    else {
+      var password = req.body.password;
+      keepass.getDatabaseGroups(databaseName, password).then(function (result) {
+        res.json(result);
+      }, function (reason) {
+        res.send("problem occurred reading '" + databaseName + "': " + reason, 500);
+      });
+    }
+  });
+  app.post('/:filename/:group', function (req, res) {
+    var databaseName = req.params.filename;
+    if (!keepass.exists(databaseName)) {
+      res.send("database '" + databaseName + "' doesn't exist", 404);
+    }
+    else {
+      var password = req.body.password;
+      var groupId = req.params.group;
+      keepass.getGroupEntries(databaseName, password, groupId).then(function (result) {
+        res.json(result);
+      }, function (reason) {
+        res.send("problem occurred reading '" + groupId + "' from '" + databaseName + "': " + reason, 500);
+      });
+    }
+  });
 
   if (config.https && config.https.enabled) {
     var https = require('https');
