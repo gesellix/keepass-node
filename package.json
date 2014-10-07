@@ -12,10 +12,13 @@
     "test": "mocha --reporter spec"
   },
   "dependencies": {
+    "angular-jwt": "^0.0.2",
     "body-parser": "^1.9.0",
     "compression": "^1.1.0",
     "express": "^4.9.5",
+    "express-jwt": "^0.4.0",
     "googleapis": "^1.0.14",
+    "jsonwebtoken": "^1.1.2",
     "keepass.io": "git://github.com/NeoXiD/keepass.io.git#feature/basic-api",
     "q": "^1.0.1",
     "underscore": "^1.7.0"
