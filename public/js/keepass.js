@@ -57,37 +57,35 @@ keepass.config(function ($httpProvider, jwtInterceptor2Provider) {
 keepass.service('kdbxBackendService', function ($http) {
   this.getDatabases = function () {
     return $http({
-      "method": "get",
-      "url": '/databases'
-    });
+                   "method": "get",
+                   "url": '/databases'
+                 });
   };
   this.getDatabaseAuthToken = function (filename, password) {
     return $http({
-      "method": "post",
-      "url": '/databases/' + encodeURIComponent(filename) + '/auth',
-      data: {password: password}
-    });
+                   "method": "post",
+                   "url": '/databases/' + encodeURIComponent(filename) + '/auth',
+                   data: {password: password}
+                 });
   };
   this.getRaw = function (filename, password) {
     return $http({
-      "method": "post",
-      "url": '/databases/' + encodeURIComponent(filename),
-      data: {password: password}
-    });
+                   "method": "post",
+                   "url": '/databases/' + encodeURIComponent(filename),
+                   data: {password: password}
+                 });
   };
-  this.getGroups = function (filename, password) {
+  this.getGroups = function (filename) {
     return $http({
-      "method": "post",
-      "url": '/' + encodeURIComponent(filename) + '/groups',
-      data: {password: password}
-    });
+                   "method": "get",
+                   "url": '/' + encodeURIComponent(filename) + '/groups'
+                 });
   };
-  this.getEntries = function (filename, password, group) {
+  this.getEntries = function (filename, group) {
     return $http({
-      "method": "post",
-      "url": '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(group),
-      data: {password: password}
-    });
+                   "method": "get",
+                   "url": '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(group)
+                 });
   };
 });
 
@@ -114,37 +112,37 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
   };
 
   $scope.loadEntries = function () {
-    $scope.errors = [];
-    $scope.messages = ["authenticate..."];
-    kdbxBackendService.getDatabaseAuthToken($scope.selectedDb, $scope.dbPassword)
-        .then(function (result) {
-          console.log(result.data);
-          localStorage.setItem('jwt', result.data.jwt);
-        }, function (reason) {
-          console.log(reason);
-        });
-
-    $scope.errors = [];
-    $scope.messages = ["loading..."];
-    $scope.groupsTree = [];
-    $scope.groupEntries = [];
     //kdbxBackendService.getRaw($scope.selectedDb, $scope.dbPassword)
     //    .then(function (result) {
     //            console.log(result.data.Root.Group);
     //          });
-    kdbxBackendService.getGroups($scope.selectedDb, $scope.dbPassword)
+    $scope.errors = [];
+    $scope.messages = ["authenticate..."];
+    kdbxBackendService.getDatabaseAuthToken($scope.selectedDb, $scope.dbPassword)
         .then(function (result) {
-          $scope.errors = [];
-          $scope.messages = [];
-          $scope.messages.push("groups successfully loaded");
-          onGroupsLoaded(result.data);
-        },
-        function (reason) {
-          $scope.messages = [];
-          $scope.errors = [];
-          $scope.errors.push("load groups HTTP status: " + reason.status);
-          $scope.errors.push(reason.data);
-        });
+                    localStorage.setItem('jwt', result.data.jwt);
+                  }, function (reason) {
+                    console.log(reason);
+                  })
+        .then(function () {
+                $scope.errors = [];
+                $scope.messages = ["loading..."];
+                $scope.groupsTree = [];
+                $scope.groupEntries = [];
+                kdbxBackendService.getGroups($scope.selectedDb)
+                    .then(function (result) {
+                            $scope.errors = [];
+                            $scope.messages = [];
+                            $scope.messages.push("groups successfully loaded");
+                            onGroupsLoaded(result.data);
+                          },
+                          function (reason) {
+                            $scope.messages = [];
+                            $scope.errors = [];
+                            $scope.errors.push("load groups HTTP status: " + reason.status);
+                            $scope.errors.push(reason.data);
+                          });
+              });
   };
 
   init('keepassBrowser', [kdbxBackendService.getDatabases()], function (result) {
@@ -160,19 +158,19 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
       $scope.errors = [];
       $scope.messages = ["loading..."];
       $scope.groupEntries = [];
-      kdbxBackendService.getEntries($scope.selectedDb, $scope.dbPassword, $scope.kdbxTree.currentNode.UUID)
+      kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
           .then(function (result) {
-            $scope.errors = [];
-            $scope.messages = [];
-            $scope.messages.push("entries successfully loaded");
-            onGroupSelected(result.data);
-          },
-          function (reason) {
-            $scope.messages = [];
-            $scope.errors = [];
-            $scope.errors.push("load entries HTTP status: " + reason.status);
-            $scope.errors.push(reason.data);
-          });
+                  $scope.errors = [];
+                  $scope.messages = [];
+                  $scope.messages.push("entries successfully loaded");
+                  onGroupSelected(result.data);
+                },
+                function (reason) {
+                  $scope.messages = [];
+                  $scope.errors = [];
+                  $scope.errors.push("load entries HTTP status: " + reason.status);
+                  $scope.errors.push(reason.data);
+                });
     }
   }, false)
 });

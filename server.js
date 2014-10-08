@@ -43,73 +43,67 @@
       res.status(500).send("error reading database list: " + reason);
     });
   });
-  app.post('/databases/:filename', function (req, res) {
-    var databaseName = req.params.filename;
-    if (!keepass.exists(databaseName)) {
-      res.status(404).send("database '" + databaseName + "' doesn't exist");
-    }
-    else {
-      var password = req.body.password;
-      keepass.getDatabaseRaw(databaseName, password).then(function (result) {
-        res.json(result);
-      }, function (reason) {
-        res.status(500).send("problem occurred reading '" + databaseName + "': " + reason);
-      });
-    }
-  });
+
   // TODO. obviously.
   var secret = 'shhhhhhared-secret';
+  var expressJwtConfig = {secret: secret, userProperty: 'jwt'};
+
   app.post('/databases/:filename/auth',
-      function (req, res) {
-        var databaseName = req.params.filename;
-        if (!keepass.exists(databaseName)) {
-          res.status(404).send("database '" + databaseName + "' doesn't exist");
-        }
-        else {
-          var password = req.body.password;
-          keepass.getDatabaseRaw(databaseName, password).then(function (result) {
-            var token = jwt.sign({filename: databaseName, password: password}, secret);
-            res.json({jwt: token});
-          }, function (reason) {
-            res.status(500).send("problem occurred reading '" + databaseName + "': " + reason);
+           function (req, res) {
+             var databaseName = req.params.filename;
+             if (!keepass.exists(databaseName)) {
+               res.status(404).send("database '" + databaseName + "' doesn't exist");
+             }
+             else {
+               var password = req.body.password;
+               keepass.getDatabaseRaw(databaseName, password)
+                   .then(function (result) {
+                           var token = jwt.sign({filename: databaseName, password: password}, secret);
+                           res.json({jwt: token});
+                         }, function (reason) {
+                           res.status(500).send("problem occurred reading '" + databaseName + "': " + reason);
+                         });
+             }
+           });
+  app.get('/:filename/groups',
+          expressJwt(expressJwtConfig),
+          function (req, res) {
+            if (req.jwt.filename != req.params.filename) {
+              res.status(401).send("access denied");
+              return;
+            }
+            var databaseName = req.params.filename;
+            if (!keepass.exists(databaseName)) {
+              res.status(404).send("database '" + databaseName + "' doesn't exist");
+            }
+            else {
+              var password = req.jwt.password;
+              keepass.getDatabaseGroups(databaseName, password)
+                  .then(function (result) {
+                          res.json(result);
+                        }, function (reason) {
+                          res.status(500).send("problem occurred reading '" + databaseName + "': " + reason);
+                        });
+            }
           });
-        }
-      });
-  app.post('/:filename/groups',
-      expressJwt({secret: secret, userProperty: 'jwt'}),
-      function (req, res) {
-        if (req.jwt.filename != req.params.filename) {
-          res.status(401).send("access denied");
-          return;
-        }
-        var databaseName = req.params.filename;
-        if (!keepass.exists(databaseName)) {
-          res.status(404).send("database '" + databaseName + "' doesn't exist");
-        }
-        else {
-          var password = req.jwt.password;
-          keepass.getDatabaseGroups(databaseName, password).then(function (result) {
-            res.json(result);
-          }, function (reason) {
-            res.status(500).send("problem occurred reading '" + databaseName + "': " + reason);
+  app.get('/:filename/:group',
+          expressJwt(expressJwtConfig),
+          function (req, res) {
+            var databaseName = req.params.filename;
+            if (!keepass.exists(databaseName)) {
+              res.status(404).send("database '" + databaseName + "' doesn't exist");
+            }
+            else {
+              var password = req.jwt.password;
+              var groupId = req.params.group;
+              keepass.getGroupEntries(databaseName, password, groupId)
+                  .then(function (result) {
+                          res.json(result);
+                        }, function (reason) {
+                          res.status(500).send("problem occurred reading '" + groupId + "' from '" + databaseName + "': " + reason);
+                        });
+            }
           });
-        }
-      });
-  app.post('/:filename/:group', function (req, res) {
-    var databaseName = req.params.filename;
-    if (!keepass.exists(databaseName)) {
-      res.status(404).send("database '" + databaseName + "' doesn't exist");
-    }
-    else {
-      var password = req.body.password;
-      var groupId = req.params.group;
-      keepass.getGroupEntries(databaseName, password, groupId).then(function (result) {
-        res.json(result);
-      }, function (reason) {
-        res.status(500).send("problem occurred reading '" + groupId + "' from '" + databaseName + "': " + reason);
-      });
-    }
-  });
 
   if (config.https && config.https.enabled) {
     var https = require('https');
