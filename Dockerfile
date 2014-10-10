@@ -7,9 +7,9 @@ RUN mkdir -p /opt/keepass/{certs,local}
 ADD ./package.json /opt/keepass/package.json
 RUN cd /opt/keepass && npm install
 
+ADD ./lib /opt/keepass/
 ADD ./public /opt/keepass/
 ADD ./README.md /opt/keepass/
-ADD ./google-drive.js /opt/keepass/
 ADD ./keepass-node-config.template.js /opt/keepass/
 ADD ./server.js /opt/keepass/
 
