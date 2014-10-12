@@ -22,7 +22,6 @@ keepassEntries.directive('kdbxEntry', function () {
     },
     link: function (scope, element) {
       scope.showPassword = false;
-      element.find('.collapse').collapse({toggle: false});
       new ZeroClipboard(element.find('.copy-password-btn'));
     },
     controller: function ($scope) {
@@ -36,6 +35,21 @@ keepassEntries.directive('kdbxEntry', function () {
         var hit = _.findWhere($scope.kdbxEntry.String, {Key: 'Password'});
         return hit ? hit.Value._ : '';
       };
+
+      $scope.entry = {};
+      _.each(['Title', 'URL', 'UserName', 'Notes'], function (key) {
+        var hit = _.findWhere($scope.kdbxEntry.String, {Key: key});
+        $scope.entry[key] = hit ? hit.Value : '';
+      });
     }
+    //controller: function ($scope) {
+    //  _.each(['Title', 'URL', 'UserName', 'Notes'], function (key) {
+    //    var hit = _.findWhere($scope.kdbxEntry.String, {Key: key});
+    //    $scope.eentry[key] = hit ? hit.Value : '';
+    //  });
+    //
+    //  var hit = _.findWhere($scope.kdbxEntry.String, {Key: 'Password'});
+    //  $scope.eentry['Password'] = hit ? hit.Value._ : '';
+    //}
   };
 });

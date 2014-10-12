@@ -1,6 +1,6 @@
 "use strict";
 
-var keepass = angular.module('keepass', ['init', 'angularTreeview', 'keepass-entries']);
+var keepass = angular.module('keepass', ['init', 'ngAnimate', 'ngMaterial', 'angularTreeview', 'keepass-entries']);
 
 keepass.provider('jwtInterceptor2', function () {
 
@@ -120,10 +120,10 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     $scope.messages = ["authenticate..."];
     kdbxBackendService.getDatabaseAuthToken($scope.selectedDb, $scope.dbPassword)
         .then(function (result) {
-                    localStorage.setItem('jwt', result.data.jwt);
-                  }, function (reason) {
-                    console.log(reason);
-                  })
+                localStorage.setItem('jwt', result.data.jwt);
+              }, function (reason) {
+                console.log(reason);
+              })
         .then(function () {
                 $scope.errors = [];
                 $scope.messages = ["loading..."];
@@ -145,15 +145,7 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
               });
   };
 
-  init('keepassBrowser', [kdbxBackendService.getDatabases()], function (result) {
-    $scope.databases = result[0].data.databases;
-    if ($scope.databases && $scope.databases.length === 1) {
-      $scope.selectedDb = $scope.databases[0];
-    }
-    $scope.loading = false;
-  });
-
-  init.watchAfterInit($scope, 'kdbxTree.currentNode', function () {
+  var onNodeSelected = function () {
     if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
       $scope.errors = [];
       $scope.messages = ["loading..."];
@@ -172,5 +164,15 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
                   $scope.errors.push(reason.data);
                 });
     }
-  }, false)
+  };
+
+  init('keepassBrowser', [kdbxBackendService.getDatabases()], function (result) {
+    $scope.databases = result[0].data.databases;
+    if ($scope.databases && $scope.databases.length === 1) {
+      $scope.selectedDb = $scope.databases[0];
+    }
+    $scope.loading = false;
+  });
+
+  init.watchAfterInit($scope, 'kdbxTree.currentNode', onNodeSelected, false)
 });

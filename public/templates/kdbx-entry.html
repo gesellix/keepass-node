@@ -1,10 +1,33 @@
 <div class="kdbxEntry">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{kdbxEntryIndex}}">{{getTitle()}}</a>
-        </h4>
-    </div>
-    <div id="collapse{{kdbxEntryIndex}}" class="panel-collapse collapse">
+    <h4>
+        <a href="#collapse{{kdbxEntryIndex}}" ng-model="collapse" ng-click="collapse = !collapse">{{entry.Title}}</a>
+    </h4>
+
+    <div id="collapse{{kdbxEntryIndex}}" ng-show="collapse">
+        <!--<material-toolbar class="theme-dark-tff material-medium-tall" style="padding-top:15px;">-->
+            <!--<div class="material-toolbar-tools dark">-->
+                <!--<tf-float label="Title" value="entry.Title"></tf-float>-->
+                <!--&lt;!&ndash;<tf-float label="URL" value="entry.URL" type="url"></tf-float>&ndash;&gt;-->
+            <!--</div>-->
+        <!--</material-toolbar>-->
+
+        <!--<material-content>-->
+            <!--<form style="padding: 20px;">-->
+                <!--<tf-float label="Title" value="{{entry.Title}}" disabled> </tf-float>-->
+                <!--<div class="row">-->
+                    <!--<tf-float label="FirstName" value="user.firstName"> </tf-float>-->
+                    <!--<tf-float label="LastName" value="user.lastName" class="long"> </tf-float>-->
+                <!--</div>-->
+                <!--<tf-float label="Address" value="user.address"> </tf-float>-->
+                <!--<div class="row">-->
+                    <!--<tf-float label="City" value="user.city"> </tf-float>-->
+                    <!--<tf-float label="State" value="user.state"> </tf-float>-->
+                    <!--<tf-float label="Postal Code" value="user.postalCode"> </tf-float>-->
+                <!--</div>-->
+                <!--<tf-float label="Country" value="user.country" disabled> </tf-float>-->
+            <!--</form>-->
+        <!--</material-content>-->
+
         <div class="panel-body">
             <dl class="dl-horizontal">
                 <dt>Title</dt>
@@ -15,20 +38,24 @@
                 <dd>{{getUserName()}}</dd>
                 <dt>Password</dt>
                 <dd>
-                    <button type="button"
-                            class="btn btn-default btn-sm copy-password-btn"
-                            data-clipboard-text="{{getPassword()}}">
-                        <span class="glyphicon glyphicon-share"></span>
-                    </button>
-                    <button type="button"
-                            class="btn btn-default btn-sm"
-                            ng-click="showPassword = !showPassword">
-                        <span class="glyphicon" ng-class="showPassword ? 'glyphicon-eye-close' : 'glyphicon-eye-open'"></span>
-                    </button>
-                    <input ng-readonly="true" ng-show="showPassword"
+                    <material-button class="material-button-fab copy-password-btn"
+                                     data-clipboard-text="{{getPassword()}}">
+                        <span style="width: 24px; height: 24px;">
+                            <i class="fa fa-copy"></i>
+                        </span>
+                    </material-button>
+
+                    <material-button class="material-button-fab"
+                                     ng-click="showPassword = !showPassword">
+                        <span style="width: 24px; height: 24px;">
+                            <i class="fa" ng-class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </span>
+                    </material-button>
+
+                    <input ng-readonly="true"
+                           ng-show="showPassword"
                            style="display: inline-block;"
                            ng-value="getPassword()"/>
-                    <!--<div tabindex="0" ng-show="showPassword" style="display: inline-block;">{{getPassword()}}</div>-->
                 </dd>
                 <dt>Notes</dt>
                 <dd>{{getNotes()}}</dd>
