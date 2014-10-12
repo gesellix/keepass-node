@@ -6,6 +6,7 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 var should = chai.should();
 var fs = require('fs');
+var util = require('./test-util/util');
 
 var config = {
   databaseDir: __dirname + '/resources/',
@@ -130,6 +131,48 @@ describe('backend', function () {
                     res.body.should.have.property("length", 2)
                     && res.body.should.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg==')
                     && res.body.should.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==');
+                  })
+                  .expect(200, done);
+            });
+      });
+    });
+  });
+
+  describe('PUT /:filename/:group/:entry', function () {
+    describe('without Authorization', function () {
+      it('should respond with status 401 "Unauthorized"', function (done) {
+
+        request(app)
+            .put('/example.kdbx/aGroup/anEntryId')
+            .set('Accept', 'application/json')
+            .expect(401, done);
+      });
+    });
+    describe('with valid Authorization', function () {
+      before(function (done) {
+        util.createTmpDb('example.kdbx', 'example-backend-test.kdbx', done);
+      });
+      after(function (done) {
+        util.removeTmpDb('example-backend-test.kdbx', done);
+      });
+      it('should respond with group entries', function (done) {
+
+        request(app)
+            .post('/databases/example-backend-test.kdbx/auth')
+            .send({password: "password"})
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end(function (err, res) {
+              should.not.exist(err);
+              res.body.jwt.should.exist;
+              var currentJwt = res.body.jwt;
+              request(app)
+                  .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/entry-uuid')
+                  .send({entry: {UUID: "entry-uuid"}})
+                  .set('Accept', 'application/json')
+                  .set('Authorization', 'Bearer ' + currentJwt)
+                  .expect(function (res) {
+                    res.body.should.deep.have.property("UUID", "entry-uuid");
                   })
                   .expect(200, done);
             });

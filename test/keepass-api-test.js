@@ -3,7 +3,10 @@ var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 var should = chai.should();
-var keepass = require('../lib').Keepass(__dirname + '/resources/');
+var util = require('./test-util/util');
+var resourcesDir = util.resourcesDir;
+var keepass = require('../lib').Keepass(resourcesDir);
+var uuid = require('node-uuid');
 
 describe('keepass api', function () {
   describe('Requesting the database list', function () {
@@ -92,28 +95,28 @@ describe('keepass api', function () {
       it('should return the graph nodes', function () {
         var databaseGroups = keepass.getDatabaseGroups('example.kdbx', 'password');
         return q.all([
-                       databaseGroups.should.eventually.deep.have.property("[0].Name", 'example'),
-                       databaseGroups.should.eventually.deep.have.property("[0].UUID", 'n3rnRvvOF0SvPriiFXr+Tg=='),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups.length", 6),
+          databaseGroups.should.eventually.deep.have.property("[0].Name", 'example'),
+          databaseGroups.should.eventually.deep.have.property("[0].UUID", 'n3rnRvvOF0SvPriiFXr+Tg=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups.length", 6),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[0].Name", 'General'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[0].UUID", 'wXlnHFx+T0mHRYtNN+WgJg=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[0].Name", 'General'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[0].UUID", 'wXlnHFx+T0mHRYtNN+WgJg=='),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[1].Name", 'Windows'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[1].UUID", 'PtfRMFDAvkeQBJ/VTfhJ2Q=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[1].Name", 'Windows'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[1].UUID", 'PtfRMFDAvkeQBJ/VTfhJ2Q=='),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[2].Name", 'Network'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[2].UUID", 'wjSRP+QXoU+DqHcoyJriMg=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[2].Name", 'Network'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[2].UUID", 'wjSRP+QXoU+DqHcoyJriMg=='),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[3].Name", 'Internet'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[3].UUID", 'LioZCHxIlU6PH1aIMd24ow=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[3].Name", 'Internet'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[3].UUID", 'LioZCHxIlU6PH1aIMd24ow=='),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[4].Name", 'eMail'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[4].UUID", 'pQZId+QEuEWzdGipwbiqBg=='),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[4].Name", 'eMail'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[4].UUID", 'pQZId+QEuEWzdGipwbiqBg=='),
 
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[5].Name", 'Homebanking'),
-                       databaseGroups.should.eventually.deep.have.property("[0].Groups[5].UUID", 'I+Oc014W5kahembqd91ofA==')
-                     ]);
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[5].Name", 'Homebanking'),
+          databaseGroups.should.eventually.deep.have.property("[0].Groups[5].UUID", 'I+Oc014W5kahembqd91ofA==')
+        ]);
       });
     });
   });
@@ -146,10 +149,121 @@ describe('keepass api', function () {
       it('should return all group entries', function () {
         var entries = keepass.getGroupEntries('example.kdbx', 'password', 'n3rnRvvOF0SvPriiFXr+Tg==');
         return q.all([
-                       entries.should.eventually.have.property("length", 2),
-                       entries.should.eventually.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg=='),
-                       entries.should.eventually.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==')
-                     ]);
+          entries.should.eventually.have.property("length", 2),
+          entries.should.eventually.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg=='),
+          entries.should.eventually.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==')
+        ]);
+      });
+    });
+  });
+
+  describe('Adding a group entry', function () {
+
+    afterEach(function (done) {
+      done();
+    });
+
+    describe('with a missing password', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroupEntry('example.kdbx').should.be.rejectedWith("Expected `rawPassword` to be a string");
+      });
+    });
+
+    describe('with an invalid password', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroupEntry('example.kdbx', 'some bad password').should.be.rejectedWith("Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
+      });
+    });
+
+    describe('with a missing groupId', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroupEntry('example.kdbx', 'password').should.be.rejectedWith("Expected `groupUuid` to be a string");
+      });
+    });
+
+    describe('with a missing entry', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroupEntry('example.kdbx', 'password', 'n3rnRvvOF0SvPriiFXr+Tg==').should.be.rejectedWith("Expected `entry` to be defined");
+      });
+    });
+
+    describe('with a valid password', function () {
+      describe('and an unknown entryId', function () {
+        var dbUnderTest = 'example-with-new-entry.kdbx';
+        before(function (done) {
+          util.createTmpDb('example.kdbx', dbUnderTest, done);
+        });
+        after(function (done) {
+          util.removeTmpDb(dbUnderTest, done);
+        });
+        it('should save a new entry', function () {
+          var entryId = uuid.v4();
+          var entry = {
+            UUID: entryId
+          };
+          return keepass.saveGroupEntry(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', entry)
+              .then(function (savedEntry) {
+                savedEntry.UUID.should.equal(entryId);
+                var entries = keepass.getGroupEntries(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==');
+                return q.all([
+                  entries.should.eventually.have.property("length", 3),
+                  entries.should.eventually.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg=='),
+                  entries.should.eventually.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ=='),
+                  entries.should.eventually.deep.have.property("[2].UUID", entryId)
+                ]);
+              });
+        });
+      });
+      describe('and a known entryId', function () {
+        var dbUnderTest = 'example-with-existing-entry.kdbx';
+        before(function (done) {
+          util.createTmpDb('example.kdbx', dbUnderTest, done);
+        });
+        after(function (done) {
+          util.removeTmpDb(dbUnderTest, done);
+        });
+        it('should update the existing entry', function () {
+          var entryId = uuid.v4();
+          var entry = {
+            UUID: entryId,
+            "String": [
+              {
+                "Key": "key1",
+                "Value": "value1"
+              },
+              {
+                "Key": "key2",
+                "Value": "value2"
+              }]
+          };
+          return keepass.saveGroupEntry(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', entry).
+              then(function () {
+                var entriesBeforeUpdate = keepass.getGroupEntries(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==');
+                return q.all([
+                  entriesBeforeUpdate.should.eventually.have.property("length", 3),
+                  entriesBeforeUpdate.should.eventually.deep.have.property("[2].UUID", entryId),
+                  entriesBeforeUpdate.should.eventually.deep.have.property("[2].String[0].Key", "key1"),
+                  entriesBeforeUpdate.should.eventually.deep.have.property("[2].String[0].Value", "value1")
+                ]).then(function () {
+                  entry.String[1] = {
+                    "Key": "TestString",
+                    "Value": "TestValue"
+                  };
+                  return keepass.saveGroupEntry(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', entry).
+                      then(function () {
+                        var entries = keepass.getGroupEntries(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==');
+                        return q.all([
+                          entries.should.eventually.have.property("length", 3),
+                          entries.should.eventually.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg=='),
+                          entries.should.eventually.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ=='),
+                          entries.should.eventually.deep.have.property("[2].UUID", entryId),
+                          entries.should.eventually.deep.have.property("[2].String[1].Key", "TestString"),
+                          entries.should.eventually.deep.have.property("[2].String[1].Value", "TestValue")
+                        ]);
+                      });
+                });
+              });
+        });
       });
     });
   });

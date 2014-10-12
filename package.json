@@ -20,6 +20,7 @@
     "googleapis": "^1.0.14",
     "jsonwebtoken": "^1.1.2",
     "keepass.io": "git://github.com/NeoXiD/keepass.io.git#feature/basic-api",
+    "node-uuid": "^1.4.1",
     "q": "^1.0.1",
     "underscore": "^1.7.0"
   },
@@ -27,6 +28,7 @@
     "chai": "^1.9.1",
     "chai-as-promised": "^4.1.1",
     "coveralls": "^2.11.2",
+    "fs-extra": "^0.12.0",
     "istanbul": "^0.3.2",
     "mocha": "^1.21.4",
     "supertest": "^0.14.0"
