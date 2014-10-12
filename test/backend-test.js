@@ -29,6 +29,17 @@ describe('backend', function () {
           .expect(200, done);
     });
   });
+  describe('GET /index.html', function () {
+    it('should respond with index.html', function (done) {
+
+      var index = fs.readFileSync(__dirname + '/../public/index.html', 'utf8');
+
+      request(app)
+          .get('/')
+          .expect(index)
+          .expect(200, done);
+    });
+  });
   describe('GET /databases', function () {
     it('should respond with databases list', function (done) {
 
@@ -40,27 +51,56 @@ describe('backend', function () {
     });
   });
   describe('POST /databases/:filename/auth', function () {
-    it('should respond with jwt', function (done) {
+    describe('with missing password', function () {
+      it('should respond with status 400', function (done) {
 
-      request(app)
-          .post('/databases/example.kdbx/auth')
-          .send({password: "password"})
-          .set('Accept', 'application/json')
-          .expect(function (res) {
-            return !/(\.|_|.)+/.test(res.body.jwt);
-          })
-          .expect(200, done);
+        request(app)
+            .post('/databases/example.kdbx/auth')
+            .set('Accept', 'application/json')
+            .expect(function (res) {
+              res.body.msg.should.equal("please set a password");
+            })
+          // would prefer to respond with status 4xx
+            .expect(401, done);
+      });
+    });
+    describe('with invalid password', function () {
+      it('should respond with status 500', function (done) {
+
+        request(app)
+            .post('/databases/example.kdbx/auth')
+            .send({password: "invalid-password"})
+            .set('Accept', 'application/json')
+            .expect(function (res) {
+              res.body.msg.should.equal("problem occurred reading 'example.kdbx': KpioDatabaseError: Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
+            })
+          // would prefer to respond with status 4xx
+            .expect(500, done);
+      });
+    });
+    describe('with valid password', function () {
+      it('should respond with jwt', function (done) {
+
+        request(app)
+            .post('/databases/example.kdbx/auth')
+            .send({password: "password"})
+            .set('Accept', 'application/json')
+            .expect(function (res) {
+              return !/(\.|_|.)+/.test(res.body.jwt);
+            })
+            .expect(200, done);
+      });
     });
   });
   describe('POST /databases/-unknown-/auth', function () {
-    it('should respond with status 404 and empty body', function (done) {
+    it('should respond with status 404', function (done) {
 
       request(app)
           .post('/databases/unknown.kdbx/auth')
           .send({password: "password"})
           .set('Accept', 'application/json')
           .expect(function (res) {
-            res.body.should.be.empty;
+            res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
           })
           .expect(404, done);
     });
