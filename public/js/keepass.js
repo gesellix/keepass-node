@@ -121,8 +121,6 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     kdbxBackendService.getDatabaseAuthToken($scope.selectedDb, $scope.dbPassword)
         .then(function (result) {
                 localStorage.setItem('jwt', result.data.jwt);
-              }, function (reason) {
-                console.log(reason);
               })
         .then(function () {
                 $scope.errors = [];
@@ -142,6 +140,10 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
                             $scope.errors.push("load groups HTTP status: " + reason.status);
                             $scope.errors.push(reason.data);
                           });
+              }, function (reason) {
+                // TODO show toast
+                localStorage.removeItem('jwt');
+                console.log(reason);
               });
   };
 

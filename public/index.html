@@ -44,7 +44,7 @@
             <aside flex-sm="33" flex-md="20">
                 <p ng-show="loading">loading databases...</p>
 
-                <form class="form-horizontal" role="form" ng-submit="loadEntries()" ng-show="!loading">
+                <form role="form" ng-submit="loadEntries()" ng-show="!loading">
                     <material-input-group>
                         <p>Select database</p>
 
@@ -56,7 +56,7 @@
                     </material-input-group>
 
                     <material-input-group ng-disabled="!selectedDb">
-                        <label for="{{ 'dbPassword' }}">Password</label>
+                        <label for="dbPassword">Password</label>
                         <material-input id="dbPassword" ng-model="dbPassword" type="password"></material-input>
                     </material-input-group>
 

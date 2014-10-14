@@ -25,31 +25,16 @@ keepassEntries.directive('kdbxEntry', function () {
       new ZeroClipboard(element.find('.copy-password-btn'));
     },
     controller: function ($scope) {
-      _.each(['Title', 'URL', 'UserName', 'Notes'], function (key) {
-        $scope['get' + key] = function () {
-          var hit = _.findWhere($scope.kdbxEntry.String, {Key: key});
-          return hit ? hit.Value : '';
-        }
-      });
-      $scope.getPassword = function () {
-        var hit = _.findWhere($scope.kdbxEntry.String, {Key: 'Password'});
-        return hit ? hit.Value._ : '';
+      $scope.entry = {
+        UUID: $scope.kdbxEntry.UUID
       };
-
-      $scope.entry = {};
       _.each(['Title', 'URL', 'UserName', 'Notes'], function (key) {
         var hit = _.findWhere($scope.kdbxEntry.String, {Key: key});
         $scope.entry[key] = hit ? hit.Value : '';
       });
+
+      var hit = _.findWhere($scope.kdbxEntry.String, {Key: 'Password'});
+      $scope.entry['Password'] = hit ? hit.Value._ : '';
     }
-    //controller: function ($scope) {
-    //  _.each(['Title', 'URL', 'UserName', 'Notes'], function (key) {
-    //    var hit = _.findWhere($scope.kdbxEntry.String, {Key: key});
-    //    $scope.eentry[key] = hit ? hit.Value : '';
-    //  });
-    //
-    //  var hit = _.findWhere($scope.kdbxEntry.String, {Key: 'Password'});
-    //  $scope.eentry['Password'] = hit ? hit.Value._ : '';
-    //}
   };
 });
