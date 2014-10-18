@@ -8,47 +8,49 @@
         <div id="collapse{{kdbxEntryIndex}}" ng-show="collapse">
             <div layout="vertical" layout-padding>
                 <div layout="horizontal" layout-padding>
-                    <material-input-group>
+                    <md-input-group>
                         <label>Title</label>
-                        <material-input ng-model="entry.Title" ng-readonly="true"></material-input>
-                    </material-input-group>
+                        <md-input ng-model="entry.Title" ng-readonly="true"></md-input>
+                    </md-input-group>
 
-                    <material-input-group>
+                    <md-input-group>
                         <label>URL</label>
-                        <material-input ng-model="entry.URL" ng-readonly="true"></material-input>
-                    </material-input-group>
+                        <md-input ng-model="entry.URL" ng-readonly="true"></md-input>
+                    </md-input-group>
                     <!--<div flex="80"><a ng-href="{{entry.URL}}" target="_blank">{{entry.URL}}</a></div>-->
                 </div>
                 <div layout="horizontal" layout-padding>
-                    <material-input-group>
+                    <md-input-group>
                         <label>UserName</label>
-                        <material-input ng-model="entry.UserName" ng-readonly="true"></material-input>
-                    </material-input-group>
+                        <md-input ng-model="entry.UserName" ng-readonly="true"></md-input>
+                    </md-input-group>
 
-                    <material-button class="material-button-fab copy-password-btn"
-                                     data-clipboard-text="{{entry.Password}}">
+                    <md-button class="md-button-fab copy-password-btn"
+                               aria-label="copy password"
+                               data-clipboard-text="{{entry.Password}}">
                         <span style="width: 24px; height: 24px;">
                             <i class="fa fa-copy"></i>
                         </span>
-                    </material-button>
+                    </md-button>
 
-                    <material-button class="material-button-fab"
-                                     ng-click="showPassword = !showPassword">
+                    <md-button class="md-button-fab"
+                               aria-label="show or hide password"
+                               ng-click="showPassword = !showPassword">
                         <span style="width: 24px; height: 24px;">
                             <i class="fa" ng-class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </span>
-                    </material-button>
+                    </md-button>
 
-                    <material-input-group ng-if="showPassword">
+                    <md-input-group ng-if="showPassword">
                         <label>Password</label>
-                        <material-input ng-model="entry.Password" ng-readonly="true"></material-input>
-                    </material-input-group>
+                        <md-input ng-model="entry.Password" ng-readonly="true"></md-input>
+                    </md-input-group>
                 </div>
                 <div layout="horizontal" layout-padding>
-                    <material-input-group>
+                    <md-input-group>
                         <label>Notes</label>
-                        <material-input ng-model="entry.Notes" ng-readonly="true"></material-input>
-                    </material-input-group>
+                        <md-input ng-model="entry.Notes" ng-readonly="true"></md-input>
+                    </md-input-group>
                 </div>
 
             </div>

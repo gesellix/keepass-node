@@ -4,8 +4,8 @@
     <title>KeePass 2 reader</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="js/angular-material/angular-material.min.css"/>
-    <link rel="stylesheet" type="text/css" href="js/treeview/css/angular.treeview.css">
+    <link rel="stylesheet" type="text/css" href="js/lib/angular-material/angular-material.min.css"/>
+    <link rel="stylesheet" type="text/css" href="js/lib/treeview/css/angular.treeview.css">
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 
     <script type="text/javascript">
@@ -13,24 +13,24 @@
             env: "production"  // or "development"
         };
     </script>
-    <script src="js/less/less-1.7.5.min.js" type="text/javascript"></script>
-    <script src="js/underscore/underscore-min.js" type="text/javascript"></script>
-    <script src="js/jquery/jquery-1.11.1.min.js"></script>
-    <script src="js/angular/angular.min.js"></script>
-    <script src="js/angular/angular-animate.min.js"></script>
-    <script src="js/angular/angular-aria.min.js"></script>
-    <script src="js/hammerjs/hammer.min.js"></script>
-    <script src="js/angular-material/angular-material.js"></script>
+    <script src="js/lib/less/less-1.7.5.min.js" type="text/javascript"></script>
+    <script src="js/lib/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="js/lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="js/lib/angular/angular.min.js"></script>
+    <script src="js/lib/angular/angular-animate.min.js"></script>
+    <script src="js/lib/angular/angular-aria.min.js"></script>
+    <script src="js/lib/hammerjs/hammer.min.js"></script>
+    <script src="js/lib/angular-material/angular-material.js"></script>
 
-    <script src="js/zeroclipboard/ZeroClipboard.min.js" type="text/javascript"></script>
+    <script src="js/lib/zeroclipboard/ZeroClipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        ZeroClipboard.setDefaults({moviePath: '//' + document.location.host + '/js/zeroclipboard/ZeroClipboard.swf'});
+        ZeroClipboard.setDefaults({moviePath: '//' + document.location.host + '/js/lib/zeroclipboard/ZeroClipboard.swf'});
     </script>
 
     <script src="js/init.js" type="text/javascript"></script>
     <script src="js/keepass-entries.js" type="text/javascript"></script>
     <script src="js/keepass.js" type="text/javascript"></script>
-    <script src="js/treeview/angular.treeview.min.js" type="text/javascript"></script>
+    <script src="js/lib/treeview/angular.treeview.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div ng-app="keepass" layout-padding>
@@ -42,41 +42,43 @@
         <div flex layout="vertical" layout-sm="horizontal">
 
             <aside flex-sm="33" flex-md="20">
-                <p ng-show="loading">loading databases...</p>
+                <p ng-show="loading">loading databases...
+                    <md-progress-linear mode="indeterminate"></md-progress-linear>
+                </p>
 
                 <form role="form" ng-submit="loadEntries()" ng-show="!loading">
-                    <material-input-group>
+                    <md-input-group>
                         <p>Select database</p>
 
-                        <material-radio-group ng-model="selectedDb" id="databases">
-                            <material-radio-button ng-repeat="db in databases" ng-value="db" aria-label="{{ db }}">
+                        <md-radio-group ng-model="selectedDb" id="databases">
+                            <md-radio-button ng-repeat="db in databases" ng-value="db" aria-label="{{ db }}">
                                 {{ db }}
-                            </material-radio-button>
-                        </material-radio-group>
-                    </material-input-group>
+                            </md-radio-button>
+                        </md-radio-group>
+                    </md-input-group>
 
-                    <material-input-group ng-disabled="!selectedDb">
+                    <md-input-group ng-disabled="!selectedDb">
                         <label for="dbPassword">Password</label>
-                        <material-input id="dbPassword" ng-model="dbPassword" type="password"></material-input>
-                    </material-input-group>
+                        <md-input id="dbPassword" ng-model="dbPassword" type="password"></md-input>
+                    </md-input-group>
 
-                    <material-button class="material-button-raised" ng-click="loadEntries()">
+                    <md-button class="md-button-raised" ng-click="loadEntries()">
                         load database
-                    </material-button>
+                    </md-button>
                 </form>
 
                 <div ng-show="groupsTree">
                     <div layout="horizontal">
                         <div ng-show="kdbxTree.currentNode.UUID">
-                            <material-button class="material-button-raised">
+                            <md-button class="md-button-raised">
                                 add group
-                            </material-button>
+                            </md-button>
                         </div>
 
                         <div ng-show="kdbxTree.currentNode.UUID">
-                            <material-button class="material-button-raised">
+                            <md-button class="md-button-raised">
                                 add entry
-                            </material-button>
+                            </md-button>
                         </div>
                     </div>
 
@@ -91,16 +93,16 @@
             </aside>
 
             <main flex>
-                <material-content scroll-y flex>
-                    <material-tabs>
-                        <material-tab label="Tab #1"></material-tab>
-                        <material-tab label="Tab #2"></material-tab>
-                        <material-tab label="Tab #3"></material-tab>
-                        <material-tabs></material-tabs>
-                    </material-tabs>
+                <md-content scroll-y flex>
+                    <!--<md-tabs>-->
+                        <!--<md-tab label="Tab #1"></md-tab>-->
+                        <!--<md-tab label="Tab #2"></md-tab>-->
+                        <!--<md-tab label="Tab #3"></md-tab>-->
+                        <!--<md-tabs></md-tabs>-->
+                    <!--</md-tabs>-->
 
                     <kdbx-entry-list ng-show="groupEntries" kdbx-entries="groupEntries"></kdbx-entry-list>
-                </material-content>
+                </md-content>
             </main>
         </div>
 

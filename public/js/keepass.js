@@ -54,7 +54,8 @@ keepass.config(function ($httpProvider, jwtInterceptor2Provider) {
   $httpProvider.interceptors.push('jwtInterceptor2');
 });
 
-keepass.service('kdbxBackendService', function ($http) {
+keepass.service('kdbxBackendService', function ($http, $q) {
+  var self = this;
   this.getDatabases = function () {
     return $http({
                    "method": "get",
@@ -67,6 +68,16 @@ keepass.service('kdbxBackendService', function ($http) {
                    "url": '/databases/' + encodeURIComponent(filename) + '/auth',
                    data: {password: password}
                  });
+  };
+  this.authenticate = function (filename, password) {
+    return self.getDatabaseAuthToken(filename, password)
+        .then(function (result) {
+                localStorage.setItem('jwt', result.data.jwt);
+                return result;
+              }, function (reason) {
+                localStorage.removeItem('jwt');
+                return $q.reject(reason);
+              });
   };
   this.getRaw = function (filename, password) {
     return $http({
@@ -89,7 +100,14 @@ keepass.service('kdbxBackendService', function ($http) {
   };
 });
 
-keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService) {
+keepass.controller('ErrorToastCtrl', function ($scope, $mdToast, message) {
+  $scope.message = message;
+  $scope.closeToast = function () {
+    $mdToast.hide();
+  };
+});
+
+keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBackendService) {
   $scope.messages = [];
   $scope.errors = [];
 
@@ -99,8 +117,8 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
   $scope.selectedDb = null;
   $scope.dbPassword = null;
 
-  $scope.db = {};
   $scope.kdbxTree = null;
+  $scope.groupsTree = [];
   $scope.groupEntries = [];
 
   var onGroupsLoaded = function (groups) {
@@ -111,6 +129,16 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     $scope.groupEntries = entries;
   };
 
+  $scope.toastBottom = function (content) {
+    $mdToast.show({
+                    controller: 'ErrorToastCtrl',
+                    templateUrl: 'templates/error-toast.html',
+                    locals: {message: content},
+                    hideDelay: 10000,
+                    position: 'bottom'
+                  });
+  };
+
   $scope.loadEntries = function () {
     //kdbxBackendService.getRaw($scope.selectedDb, $scope.dbPassword)
     //    .then(function (result) {
@@ -118,10 +146,7 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
     //          });
     $scope.errors = [];
     $scope.messages = ["authenticate..."];
-    kdbxBackendService.getDatabaseAuthToken($scope.selectedDb, $scope.dbPassword)
-        .then(function (result) {
-                localStorage.setItem('jwt', result.data.jwt);
-              })
+    kdbxBackendService.authenticate($scope.selectedDb, $scope.dbPassword)
         .then(function () {
                 $scope.errors = [];
                 $scope.messages = ["loading..."];
@@ -141,9 +166,10 @@ keepass.controller('keepassBrowser', function ($scope, init, kdbxBackendService)
                             $scope.errors.push(reason.data);
                           });
               }, function (reason) {
-                // TODO show toast
-                localStorage.removeItem('jwt');
-                console.log(reason);
+                console.dir(reason);
+                $scope.toastBottom(reason.data.msg);
+                $scope.groupsTree = [];
+                $scope.groupEntries = [];
               });
   };
 
