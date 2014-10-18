@@ -100,7 +100,7 @@ keepass.service('kdbxBackendService', function ($http, $q) {
   };
 });
 
-keepass.controller('ErrorToastCtrl', function ($scope, $mdToast, message) {
+keepass.controller('ToastCtrl', function ($scope, $mdToast, message) {
   $scope.message = message;
   $scope.closeToast = function () {
     $mdToast.hide();
@@ -108,8 +108,7 @@ keepass.controller('ErrorToastCtrl', function ($scope, $mdToast, message) {
 });
 
 keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBackendService) {
-  $scope.messages = [];
-  $scope.errors = [];
+  $scope.message = null;
 
   $scope.loading = true;
   $scope.databases = [];
@@ -129,67 +128,72 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBacke
     $scope.groupEntries = entries;
   };
 
-  $scope.toastBottom = function (content) {
+  $scope.toastError = function (message) {
     $mdToast.show({
-                    controller: 'ErrorToastCtrl',
+                    controller: 'ToastCtrl',
                     templateUrl: 'templates/error-toast.html',
-                    locals: {message: content},
-                    hideDelay: 10000,
+                    locals: {message: message},
+                    hideDelay: false,
                     position: 'bottom'
                   });
   };
 
-  $scope.loadEntries = function () {
+  $scope.toastInfo = function (message) {
+    $mdToast.show({
+                    template: '<md-toast><span flex>' + message + '</span></md-toast>',
+                    hideDelay: 3000,
+                    position: 'bottom'
+                  });
+  };
+
+  $scope.loadGroups = function () {
     //kdbxBackendService.getRaw($scope.selectedDb, $scope.dbPassword)
     //    .then(function (result) {
     //            console.log(result.data.Root.Group);
     //          });
-    $scope.errors = [];
-    $scope.messages = ["authenticate..."];
+    $scope.groupsTree = [];
+    $scope.groupEntries = [];
+    $scope.message = "authenticate...";
     kdbxBackendService.authenticate($scope.selectedDb, $scope.dbPassword)
         .then(function () {
-                $scope.errors = [];
-                $scope.messages = ["loading..."];
-                $scope.groupsTree = [];
-                $scope.groupEntries = [];
-                kdbxBackendService.getGroups($scope.selectedDb)
-                    .then(function (result) {
-                            $scope.errors = [];
-                            $scope.messages = [];
-                            $scope.messages.push("groups successfully loaded");
-                            onGroupsLoaded(result.data);
-                          },
-                          function (reason) {
-                            $scope.messages = [];
-                            $scope.errors = [];
-                            $scope.errors.push("load groups HTTP status: " + reason.status);
-                            $scope.errors.push(reason.data);
-                          });
+                $scope.message = "loading...";
+                return kdbxBackendService.getGroups($scope.selectedDb)
+              })
+        .then(function (result) {
+                $scope.message = '';
+                $scope.toastInfo("groups successfully loaded");
+                onGroupsLoaded(result.data);
               }, function (reason) {
-                console.dir(reason);
-                $scope.toastBottom(reason.data.msg);
-                $scope.groupsTree = [];
-                $scope.groupEntries = [];
+                $scope.message = '';
+                console.log(reason);
+                if (reason.data && reason.data.msg) {
+                  $scope.toastError(reason.data.msg);
+                }
+                else {
+                  $scope.toastError("load groups HTTP status: " + reason.status);
+                }
               });
   };
 
   var onNodeSelected = function () {
     if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
-      $scope.errors = [];
-      $scope.messages = ["loading..."];
+      $scope.message = "loading...";
       $scope.groupEntries = [];
       kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
           .then(function (result) {
-                  $scope.errors = [];
-                  $scope.messages = [];
-                  $scope.messages.push("entries successfully loaded");
+                  $scope.message = '';
+                  $scope.toastInfo("entries successfully loaded");
                   onGroupSelected(result.data);
                 },
                 function (reason) {
-                  $scope.messages = [];
-                  $scope.errors = [];
-                  $scope.errors.push("load entries HTTP status: " + reason.status);
-                  $scope.errors.push(reason.data);
+                  $scope.message = '';
+                  console.log(reason);
+                  if (reason.data && reason.data.msg) {
+                    $scope.toastError(reason.data.msg);
+                  }
+                  else {
+                    $scope.toastError("load groups HTTP status: " + reason.status);
+                  }
                 });
     }
   };

@@ -10,7 +10,7 @@
 
     <script type="text/javascript">
         less = {
-            env: "production"  // or "development"
+            env: "production"
         };
     </script>
     <script src="js/lib/less/less-1.7.5.min.js" type="text/javascript"></script>
@@ -62,7 +62,7 @@
                         <md-input id="dbPassword" ng-model="dbPassword" type="password"></md-input>
                     </md-input-group>
 
-                    <md-button class="md-button-raised" ng-click="loadEntries()">
+                    <md-button class="md-button-raised" ng-click="loadGroups()">
                         load database
                     </md-button>
                 </form>
@@ -95,10 +95,10 @@
             <main flex>
                 <md-content scroll-y flex>
                     <!--<md-tabs>-->
-                        <!--<md-tab label="Tab #1"></md-tab>-->
-                        <!--<md-tab label="Tab #2"></md-tab>-->
-                        <!--<md-tab label="Tab #3"></md-tab>-->
-                        <!--<md-tabs></md-tabs>-->
+                    <!--<md-tab label="Tab #1"></md-tab>-->
+                    <!--<md-tab label="Tab #2"></md-tab>-->
+                    <!--<md-tab label="Tab #3"></md-tab>-->
+                    <!--<md-tabs></md-tabs>-->
                     <!--</md-tabs>-->
 
                     <kdbx-entry-list ng-show="groupEntries" kdbx-entries="groupEntries"></kdbx-entry-list>
@@ -107,15 +107,10 @@
         </div>
 
         <footer>
-            <div class="alert alert-info" ng-show="messages.length">
-                <ul class="list-group">
-                    <li ng-repeat="message in messages" class="list-group-item">{{message}}</li>
-                </ul>
-            </div>
-            <div class="alert alert-danger" ng-show="errors.length">
-                <ul class="list-group">
-                    <li ng-repeat="error in errors" class="list-group-item">{{error}}</li>
-                </ul>
+            <div ng-show="message">
+                <p>{{message}}
+                    <md-progress-linear mode="indeterminate"></md-progress-linear>
+                </p>
             </div>
         </footer>
     </div>
