@@ -76,7 +76,7 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBacke
     $scope.groupEntries = entries;
   };
 
-  $scope.toastError = function (message) {
+  var toastError = function (message) {
     $mdToast.show({
                     controller: 'ToastCtrl',
                     templateUrl: 'templates/error-toast.html',
@@ -86,7 +86,7 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBacke
                   });
   };
 
-  $scope.toastInfo = function (message) {
+  var toastInfo = function (message) {
     $mdToast.show({
                     template: '<md-toast><span flex>' + message + '</span></md-toast>',
                     hideDelay: 3000,
@@ -109,16 +109,16 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBacke
               })
         .then(function (result) {
                 $scope.message = '';
-                $scope.toastInfo("groups successfully loaded");
+                    toastInfo("groups successfully loaded");
                 onGroupsLoaded(result.data);
               }, function (reason) {
                 $scope.message = '';
                 console.log(reason);
                 if (reason.data && reason.data.msg) {
-                  $scope.toastError(reason.data.msg);
+                  toastError(reason.data.msg);
                 }
                 else {
-                  $scope.toastError("load groups HTTP status: " + reason.status);
+                  toastError("load groups HTTP status: " + reason.status);
                 }
               });
   };
@@ -130,17 +130,17 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, init, kdbxBacke
       kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
           .then(function (result) {
                   $scope.message = '';
-                  $scope.toastInfo("entries successfully loaded");
+                        toastInfo("entries successfully loaded");
                   onGroupSelected(result.data);
                 },
                 function (reason) {
                   $scope.message = '';
                   console.log(reason);
                   if (reason.data && reason.data.msg) {
-                    $scope.toastError(reason.data.msg);
+                    toastError(reason.data.msg);
                   }
                   else {
-                    $scope.toastError("load groups HTTP status: " + reason.status);
+                    toastError("load groups HTTP status: " + reason.status);
                   }
                 });
     }

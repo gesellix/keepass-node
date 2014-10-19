@@ -15,6 +15,7 @@
     "angular-jwt": "^0.0.4",
     "body-parser": "^1.9.0",
     "compression": "^1.1.0",
+    "crypto-js": "^3.1.2-5",
     "express": "^4.9.5",
     "express-jwt": "^0.4.0",
     "googleapis": "^1.0.14",

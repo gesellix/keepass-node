@@ -8,6 +8,7 @@
                       databaseDir: __dirname + '/local/',
                       publicResourcesDir: __dirname + '/public/',
 
+                      cryptKey: 'TODO__shhhhhhared-cryptKey',
                       jwtSecret: 'TODO__shhhhhhared-secret',
                       jwtUserProperty: 'jwt'
                     }, config);
