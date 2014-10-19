@@ -11,7 +11,7 @@ var util = require('./test-util/util');
 var config = {
   databaseDir: __dirname + '/resources/',
   publicResourcesDir: __dirname + '/../public/',
-
+  cryptKey: 'key',
   jwtSecret: 'secret',
   jwtUserProperty: 'jwt'
 };
