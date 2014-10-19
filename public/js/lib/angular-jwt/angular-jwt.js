@@ -23,7 +23,7 @@ angular.module('angular-jwt',
 
     var config = this;
 
-    this.$get = function ($q, $injector) {
+    this.$get = ["$q", "$injector", "$rootScope", function ($q, $injector, $rootScope) {
       return {
         request: function (request) {
           if (request.skipAuthorization) {
@@ -36,7 +36,9 @@ angular.module('angular-jwt',
             return request;
           }
 
-          var tokenPromise = $q.when($injector.invoke(config.tokenGetter));
+          var tokenPromise = $q.when($injector.invoke(config.tokenGetter, this, {
+            config: request
+          }));
 
           return tokenPromise.then(function(token) {
             if (token) {
@@ -53,7 +55,7 @@ angular.module('angular-jwt',
           return $q.reject(response);
         }
       };
-    };
+    }];
   });
 
  angular.module('angular-jwt.jwt', [])

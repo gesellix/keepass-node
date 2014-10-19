@@ -12,7 +12,7 @@
     "test": "mocha --reporter spec"
   },
   "dependencies": {
-    "angular-jwt": "^0.0.2",
+    "angular-jwt": "^0.0.4",
     "body-parser": "^1.9.0",
     "compression": "^1.1.0",
     "express": "^4.9.5",
