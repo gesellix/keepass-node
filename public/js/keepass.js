@@ -1,60 +1,8 @@
 "use strict";
 
-var keepass = angular.module('keepass', ['init', 'ngAnimate', 'ngMaterial', 'angularTreeview', 'keepass-entries']);
+var keepass = angular.module('keepass', ['jwt', 'init', 'ngAnimate', 'ngMaterial', 'angularTreeview', 'keepass-entries']);
 
-keepass.provider('jwtInterceptor2', function () {
-
-  this.authHeader = 'Authorization';
-  this.authPrefix = 'Bearer ';
-  this.tokenGetter = function () {
-    return null;
-  };
-
-  var config = this;
-
-  this.$get = function ($q, $injector, $rootScope) {
-    return {
-      request: function (request) {
-        if (request.skipAuthorization) {
-          return request;
-        }
-
-        request.headers = request.headers || {};
-        // Already has an Authorization header
-        if (request.headers[config.authHeader]) {
-          return request;
-        }
-
-        var tokenPromise = $q.when($injector.invoke(config.tokenGetter, this, {
-          config: request
-        }));
-
-        return tokenPromise.then(function (token) {
-          if (token) {
-            request.headers[config.authHeader] = config.authPrefix + token;
-          }
-          return request;
-        });
-      },
-      responseError: function (response) {
-        // handle the case where the user is not authenticated
-        if (response.status === 401) {
-          $rootScope.$broadcast('unauthenticated', response);
-        }
-        return $q.reject(response);
-      }
-    };
-  };
-});
-
-keepass.config(function ($httpProvider, jwtInterceptor2Provider) {
-  jwtInterceptor2Provider.tokenGetter = function () {
-    return localStorage.getItem('jwt');
-  };
-  $httpProvider.interceptors.push('jwtInterceptor2');
-});
-
-keepass.service('kdbxBackendService', function ($http, $q) {
+keepass.service('kdbxBackendService', function ($http, $q, jwtStore) {
   var self = this;
   this.getDatabases = function () {
     return $http({
@@ -72,10 +20,10 @@ keepass.service('kdbxBackendService', function ($http, $q) {
   this.authenticate = function (filename, password) {
     return self.getDatabaseAuthToken(filename, password)
         .then(function (result) {
-                localStorage.setItem('jwt', result.data.jwt);
+                jwtStore.saveJwt(result.data.jwt);
                 return result;
               }, function (reason) {
-                localStorage.removeItem('jwt');
+                jwtStore.removeJwt();
                 return $q.reject(reason);
               });
   };
