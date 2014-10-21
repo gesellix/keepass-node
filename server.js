@@ -3,6 +3,7 @@
 
   var _ = require('underscore');
 
+// TODO create random secrets for cryptKey and jwtSecret
   var config = require('./keepass-node-config');
   config = _.extend({
                       databaseDir: __dirname + '/local/',
