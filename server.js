@@ -2,15 +2,18 @@
   "use strict";
 
   var _ = require('underscore');
+  var crypto = require('crypto');
 
-// TODO create random secrets for cryptKey and jwtSecret
+  var cryptKey = crypto.randomBytes(256).toString('hex');
+  var jwtSecret = crypto.randomBytes(256).toString('hex');
+
   var config = require('./keepass-node-config');
   config = _.extend({
                       databaseDir: __dirname + '/local/',
                       publicResourcesDir: __dirname + '/public/',
 
-                      cryptKey: 'TODO__shhhhhhared-cryptKey',
-                      jwtSecret: 'TODO__shhhhhhared-secret',
+                      cryptKey: cryptKey,
+                      jwtSecret: jwtSecret,
                       jwtUserProperty: 'jwt'
                     }, config);
 
