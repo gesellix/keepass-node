@@ -1,4 +1,3 @@
-var express = require('express');
 var request = require('supertest');
 var _ = require('underscore');
 var chai = require("chai");
