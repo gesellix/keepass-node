@@ -1,7 +1,0 @@
-*.xml -crlf -diff
-*.chm -crlf -diff
-*.exe -crlf -diff
-*.dll -crlf -diff
-XSL/*.xsl text eol=crlf
-XSL/*.css text eol=crlf
-XSL/*.gif -crlf -diff
