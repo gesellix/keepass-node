@@ -102,7 +102,7 @@ A browser refresh later, and you can choose the updated `google-drive.kdbx` from
 ## Next
 There already are some ideas on improving this little tool:
 * your ideas are welcome!
-* keepass write support (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
+* [keepass write support](https://github.com/gesellix/keepass-node/issues/2) (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
 * add keyfile support
 * use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/)
 
