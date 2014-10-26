@@ -177,7 +177,7 @@ describe('backend', function () {
     });
   });
 
-  describe('PUT /:filename/:group/:entry', function () {
+  describe('PUT /:filename/:group/entry/:entry', function () {
     describe('without Authorization', function () {
       it('should respond with status 401 "Unauthorized"', function (done) {
 
@@ -194,7 +194,7 @@ describe('backend', function () {
       after(function (done) {
         util.removeTmpDb('example-backend-test.kdbx', done);
       });
-      it('should respond with group entries', function (done) {
+      it('should respond with group entry', function (done) {
 
         request(app)
             .post('/databases/example-backend-test.kdbx/auth')
@@ -206,7 +206,7 @@ describe('backend', function () {
               res.body.jwt.should.exist;
               var currentJwt = res.body.jwt;
               request(app)
-                  .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/entry-uuid')
+                  .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/entry/entry-uuid')
                   .send({entry: {UUID: "entry-uuid"}})
                   .set('Accept', 'application/json')
                   .set('Authorization', 'Bearer ' + currentJwt)
