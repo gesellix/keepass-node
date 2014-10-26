@@ -11,4 +11,5 @@ certs/*
 local/*
 !local/.gitkeep
 !local/example.kdbx
+!local/example.raw.json
 !local/example.kdbx.txt
