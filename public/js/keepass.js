@@ -32,7 +32,7 @@ keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbx
                     .then(function () {
                             $scope.message = '';
                             //TODO update view with new group
-                                            toast.info("group successfully added");
+                            toast.info("group successfully added");
                           },
                           function (reason) {
                             $scope.message = '';
@@ -58,7 +58,7 @@ keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbx
                     .then(function () {
                             $scope.message = '';
                             //TODO update view with new entry
-                                            toast.info("entry successfully added");
+                            toast.info("entry successfully added");
                           },
                           function (reason) {
                             $scope.message = '';
@@ -86,7 +86,7 @@ keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbx
               })
         .then(function (result) {
                 $scope.message = '';
-                    toast.info("groups successfully loaded");
+                toast.info("groups successfully loaded");
                 onGroupsLoaded(result.data);
               }, function (reason) {
                 $scope.message = '';
@@ -107,7 +107,7 @@ keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbx
       kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
           .then(function (result) {
                   $scope.message = '';
-                        toast.info("entries successfully loaded");
+                  toast.info("entries successfully loaded");
                   onGroupSelected(result.data);
                 },
                 function (reason) {
