@@ -1,68 +1,8 @@
 "use strict";
 
-var keepass = angular.module('keepass', ['jwt', 'init', 'uuid', 'ngAnimate', 'ngMaterial', 'angularTreeview', 'keepass-entries']);
+var keepass = angular.module('keepass', ['init', 'toast', 'dialog', 'angularTreeview', 'keepass-entries', 'keepass-backend']);
 
-keepass.service('kdbxBackendService', function ($http, $q, jwtStore) {
-  var self = this;
-  this.getDatabases = function () {
-    return $http({
-                   "method": "get",
-                   "url": '/databases'
-                 });
-  };
-  this.getDatabaseAuthToken = function (filename, password) {
-    return $http({
-                   "method": "post",
-                   "url": '/databases/' + encodeURIComponent(filename) + '/auth',
-                   data: {password: password}
-                 });
-  };
-  this.authenticate = function (filename, password) {
-    return self.getDatabaseAuthToken(filename, password)
-        .then(function (result) {
-                jwtStore.saveJwt(result.data.jwt);
-                return result;
-              }, function (reason) {
-                jwtStore.removeJwt();
-                return $q.reject(reason);
-              });
-  };
-  this.getGroups = function (filename) {
-    return $http({
-                   "method": "get",
-                   "url": '/' + encodeURIComponent(filename) + '/groups'
-                 });
-  };
-  this.getEntries = function (filename, group) {
-    return $http({
-                   "method": "get",
-                   "url": '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(group)
-                 });
-  };
-  this.addGroup = function (filename, parentGroup, group) {
-    return $http({
-                   "method": "put",
-                   "url": '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(parentGroup) + '/group/' + encodeURIComponent(group.UUID),
-                   "data": {group: group}
-                 });
-  };
-  this.addEntry = function (filename, parentGroup, entry) {
-    return $http({
-                   "method": "put",
-                   "url": '/' + encodeURIComponent(filename) + '/' + encodeURIComponent(parentGroup) + '/entry/' + encodeURIComponent(entry.UUID),
-                   "data": {entry: entry}
-                 });
-  };
-});
-
-keepass.controller('ToastCtrl', function ($scope, $mdToast, message) {
-  $scope.message = message;
-  $scope.closeToast = function () {
-    $mdToast.hide();
-  };
-});
-
-keepass.controller('keepassBrowser', function ($scope, $mdToast, $mdDialog, init, kdbxBackendService) {
+keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbxBackendService) {
   $scope.message = null;
 
   $scope.loading = true;
@@ -83,65 +23,25 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, $mdDialog, init
     $scope.groupEntries = entries;
   };
 
-  var toastError = function (message) {
-    $mdToast.show({
-                    controller: 'ToastCtrl',
-                    templateUrl: 'templates/error-toast.html',
-                    locals: {message: message},
-                    hideDelay: false,
-                    position: 'bottom'
-                  });
-  };
-
-  var toastInfo = function (message) {
-    $mdToast.show({
-                    template: '<md-toast><span flex>' + message + '</span></md-toast>',
-                    hideDelay: 3000,
-                    position: 'bottom'
-                  });
-  };
-
-  var newGroupDialog = function (event, parentGroup) {
-
-    var controller = function ($scope, $mdDialog, uuid) {
-      $scope.parent = parentGroup;
-      $scope.group = {
-        UUID: uuid.create()
-      };
-
-      $scope.cancel = $mdDialog.cancel;
-      $scope.save = function () {
-        $mdDialog.hide($scope.group);
-      };
-    };
-
-    return {
-      templateUrl: 'templates/create-group.html',
-      targetEvent: event,
-      controller: controller
-    }
-  };
-
   $scope.createGroup = function (event) {
     var parentGroup = $scope.kdbxTree.currentNode;
-    $mdDialog
-        .show(newGroupDialog(event, parentGroup))
+    dialog.newGroup(event, parentGroup)
         .then(function (newGroup) {
                 $scope.message = "adding group...";
                 kdbxBackendService.addGroup($scope.selectedDb, parentGroup.UUID, newGroup)
                     .then(function () {
                             $scope.message = '';
                             //TODO update view with new group
-                            toastInfo("group successfully added");
+                                            toast.info("group successfully added");
                           },
                           function (reason) {
                             $scope.message = '';
                             console.log(reason);
                             if (reason.data && reason.data.msg) {
-                              toastError(reason.data.msg);
+                              toast.error(reason.data.msg);
                             }
                             else {
-                              toastError("add group HTTP status: " + reason.status);
+                              toast.error("add group HTTP status: " + reason.status);
                             }
                           })
               }, function () {
@@ -149,48 +49,25 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, $mdDialog, init
               });
   };
 
-  var newEntryDialog = function (event, parentGroup) {
-
-    var controller = function ($scope, $mdDialog, uuid, entryTransformer) {
-      $scope.parent = parentGroup;
-      $scope.entry = {
-        UUID: uuid.create()
-      };
-
-      $scope.cancel = $mdDialog.cancel;
-      $scope.save = function () {
-        var kdbxEntry = entryTransformer.fromFlatEntry($scope.entry);
-        $mdDialog.hide(kdbxEntry);
-      };
-    };
-
-    return {
-      templateUrl: 'templates/create-entry.html',
-      targetEvent: event,
-      controller: controller
-    }
-  };
-
   $scope.createEntry = function (event) {
     var parentGroup = $scope.kdbxTree.currentNode;
-    $mdDialog
-        .show(newEntryDialog(event, parentGroup))
+    dialog.newEntry(event, parentGroup)
         .then(function (newEntry) {
                 $scope.message = "adding entry...";
                 kdbxBackendService.addEntry($scope.selectedDb, parentGroup.UUID, newEntry)
                     .then(function () {
                             $scope.message = '';
                             //TODO update view with new entry
-                            toastInfo("entry successfully added");
+                                            toast.info("entry successfully added");
                           },
                           function (reason) {
                             $scope.message = '';
                             console.log(reason);
                             if (reason.data && reason.data.msg) {
-                              toastError(reason.data.msg);
+                              toast.error(reason.data.msg);
                             }
                             else {
-                              toastError("add entry HTTP status: " + reason.status);
+                              toast.error("add entry HTTP status: " + reason.status);
                             }
                           })
               }, function () {
@@ -209,16 +86,16 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, $mdDialog, init
               })
         .then(function (result) {
                 $scope.message = '';
-                toastInfo("groups successfully loaded");
+                    toast.info("groups successfully loaded");
                 onGroupsLoaded(result.data);
               }, function (reason) {
                 $scope.message = '';
                 console.log(reason);
                 if (reason.data && reason.data.msg) {
-                  toastError(reason.data.msg);
+                  toast.error(reason.data.msg);
                 }
                 else {
-                  toastError("load groups HTTP status: " + reason.status);
+                  toast.error("load groups HTTP status: " + reason.status);
                 }
               });
   };
@@ -230,17 +107,17 @@ keepass.controller('keepassBrowser', function ($scope, $mdToast, $mdDialog, init
       kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
           .then(function (result) {
                   $scope.message = '';
-                  toastInfo("entries successfully loaded");
+                        toast.info("entries successfully loaded");
                   onGroupSelected(result.data);
                 },
                 function (reason) {
                   $scope.message = '';
                   console.log(reason);
                   if (reason.data && reason.data.msg) {
-                    toastError(reason.data.msg);
+                    toast.error(reason.data.msg);
                   }
                   else {
-                    toastError("load groups HTTP status: " + reason.status);
+                    toast.error("load groups HTTP status: " + reason.status);
                   }
                 });
     }
