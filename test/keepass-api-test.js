@@ -157,6 +157,106 @@ describe('keepass api', function () {
     });
   });
 
+  describe('Adding a child group', function () {
+
+    afterEach(function (done) {
+      done();
+    });
+
+    describe('with a missing password', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroup('example.kdbx').should.be.rejectedWith("Expected `rawPassword` to be a string");
+      });
+    });
+
+    describe('with an invalid password', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroup('example.kdbx', 'some bad password').should.be.rejectedWith("Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
+      });
+    });
+
+    describe('with a missing parentGroupId', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroup('example.kdbx', 'password').should.be.rejectedWith("Expected `groupUuid` to be a string");
+      });
+    });
+
+    describe('with an unknown parentGroupId', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroup('example.kdbx', 'password', 'an-unknown-group').should.be.rejectedWith("Could not find group with given UUID: an-unknown-group");
+      });
+    });
+
+    describe('with a missing group', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroup('example.kdbx', 'password', 'n3rnRvvOF0SvPriiFXr+Tg==').should.be.rejectedWith("Expected `group` to be defined");
+      });
+    });
+
+    describe('with a valid password', function () {
+      describe('and an unknown child groupId', function () {
+        var dbUnderTest = 'example-with-new-entry.kdbx';
+        before(function (done) {
+          util.createTmpDb('example.kdbx', dbUnderTest, done);
+        });
+        after(function (done) {
+          util.removeTmpDb(dbUnderTest, done);
+        });
+        it('should save a new group', function () {
+          var groupId = uuid.v4();
+          var group = {
+            UUID: groupId
+          };
+          return keepass.saveGroup(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', group)
+              .then(function (savedGroup) {
+                savedGroup.UUID.should.equal(groupId);
+                var groups = keepass.getDatabaseGroups(dbUnderTest, 'password');
+                return q.all([
+                  groups.should.eventually.have.property("length", 1),
+                  groups.should.eventually.deep.have.property("[0].UUID", 'n3rnRvvOF0SvPriiFXr+Tg=='),
+                  groups.should.eventually.deep.have.property("[0].Groups.length", 7),
+                  groups.should.eventually.deep.have.property("[0].Groups[6].UUID", groupId)
+                ]);
+              });
+        });
+      });
+      describe('and a known child groupId', function () {
+        var dbUnderTest = 'example-with-existing-entry.kdbx';
+        before(function (done) {
+          util.createTmpDb('example.kdbx', dbUnderTest, done);
+        });
+        after(function (done) {
+          util.removeTmpDb(dbUnderTest, done);
+        });
+        it('should update the existing group', function () {
+          var groupId = uuid.v4();
+          var group = {
+            UUID: groupId,
+            Name: "a new group"
+          };
+          return keepass.saveGroup(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', group).
+              then(function () {
+                var groupsBeforeUpdate = keepass.getDatabaseGroups(dbUnderTest, 'password');
+                return q.all([
+                  groupsBeforeUpdate.should.eventually.deep.have.property("[0].Groups[6].UUID", groupId),
+                  groupsBeforeUpdate.should.eventually.deep.have.property("[0].Groups[6].Name", "a new group")
+                ]).then(function () {
+                  group.Name = "an updated group";
+                  return keepass.saveGroup(dbUnderTest, 'password', 'n3rnRvvOF0SvPriiFXr+Tg==', group).
+                      then(function () {
+                        var groups = keepass.getDatabaseGroups(dbUnderTest, 'password');
+                        return q.all([
+                          groups.should.eventually.deep.have.property("[0].Groups[6].UUID", groupId),
+                          groups.should.eventually.deep.have.property("[0].Groups[6].Name", "an updated group")
+                        ]);
+                      });
+                });
+              });
+        });
+      });
+    });
+  });
+
   describe('Adding a group entry', function () {
 
     afterEach(function (done) {
@@ -175,9 +275,15 @@ describe('keepass api', function () {
       });
     });
 
-    describe('with a missing groupId', function () {
+    describe('with a missing parentGroupId', function () {
       it('should be rejected', function () {
         return keepass.saveGroupEntry('example.kdbx', 'password').should.be.rejectedWith("Expected `groupUuid` to be a string");
+      });
+    });
+
+    describe('with an unkown parentGroupId', function () {
+      it('should be rejected', function () {
+        return keepass.saveGroupEntry('example.kdbx', 'password', 'unknown-parent-group').should.be.rejectedWith("Could not find group with given UUID: unknown-parent-group");
       });
     });
 
