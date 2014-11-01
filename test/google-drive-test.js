@@ -1,10 +1,6 @@
 var express = require('express');
 var request = require('supertest');
 var _ = require('underscore');
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
-var should = chai.should();
 
 var googleDriveConfig = {
   "clientSecret": {
@@ -41,7 +37,7 @@ describe('google drive middleware', function () {
         res.setHeader('Content-Type', 'application/json');
         req.setEncoding('utf8');
         req.on('data', function (chunk) {
-          buf += chunk
+          buf += chunk;
         });
         req.on('end', function () {
           res.end(buf);

@@ -1,5 +1,4 @@
 var request = require('supertest');
-var _ = require('underscore');
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
@@ -8,7 +7,7 @@ var fs = require('fs');
 var util = require('./test-util/util');
 
 var config = {
-  databaseDir: __dirname + '/resources/',
+  databaseDir:        __dirname + '/resources/',
   publicResourcesDir: __dirname + '/../public/',
   cryptKey: 'key',
   jwtSecret: 'secret',
@@ -57,8 +56,8 @@ describe('backend', function () {
             .post('/databases/example.kdbx/auth')
             .set('Accept', 'application/json')
             .expect(function (res) {
-              res.body.msg.should.equal("please set a password");
-            })
+                      res.body.msg.should.equal("please set a password");
+                    })
           // would prefer to respond with status 4xx
             .expect(401, done);
       });
@@ -71,8 +70,8 @@ describe('backend', function () {
             .send({password: "invalid-password"})
             .set('Accept', 'application/json')
             .expect(function (res) {
-              res.body.msg.should.equal("problem occurred reading 'example.kdbx': KpioDatabaseError: Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
-            })
+                      res.body.msg.should.equal("problem occurred reading 'example.kdbx': KpioDatabaseError: Could not decrypt database. Either the credentials were invalid or the database is corrupt.");
+                    })
           // would prefer to respond with status 4xx
             .expect(500, done);
       });
@@ -85,8 +84,8 @@ describe('backend', function () {
             .send({password: "password"})
             .set('Accept', 'application/json')
             .expect(function (res) {
-              return !/(\.|_|.)+/.test(res.body.jwt);
-            })
+                      return !/(\.|_|.)+/.test(res.body.jwt);
+                    })
             .expect(200, done);
       });
     });
@@ -99,8 +98,8 @@ describe('backend', function () {
           .send({password: "password"})
           .set('Accept', 'application/json')
           .expect(function (res) {
-            res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
-          })
+                    res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
+                  })
           .expect(404, done);
     });
   });
@@ -143,20 +142,20 @@ describe('backend', function () {
             .set('Accept', 'application/json')
             .expect(200)
             .end(function (err, res) {
-              should.not.exist(err);
-              res.body.jwt.should.exist;
-              var currentJwt = res.body.jwt;
-              request(app)
-                  .get('/example.kdbx/groups')
-                  .set('Accept', 'application/json')
-                  .set('Authorization', 'Bearer ' + currentJwt)
-                  .expect(function (res) {
-                    res.body.should.deep.have.property("[0].Name", 'example')
-                    && res.body.should.deep.have.property("[0].UUID", 'n3rnRvvOF0SvPriiFXr+Tg==')
-                    && res.body.should.deep.have.property("[0].Groups.length", 6);
-                  })
-                  .expect(200, done);
-            });
+                   should.not.exist(err);
+                   res.body.jwt.should.exist;
+                   var currentJwt = res.body.jwt;
+                   request(app)
+                       .get('/example.kdbx/groups')
+                       .set('Accept', 'application/json')
+                       .set('Authorization', 'Bearer ' + currentJwt)
+                       .expect(function (res) {
+                                 res.body.should.deep.have.property("[0].Name", 'example') &&
+                                 res.body.should.deep.have.property("[0].UUID", 'n3rnRvvOF0SvPriiFXr+Tg==') &&
+                                 res.body.should.deep.have.property("[0].Groups.length", 6);
+                               })
+                       .expect(200, done);
+                 });
       });
     });
   });
@@ -171,7 +170,7 @@ describe('backend', function () {
       });
     });
     describe('with valid Authorization', function () {
-      describe('and unknown database', function(){
+      describe('and unknown database', function () {
         it('should respond with status 404', function (done) {
 
           request(app)
@@ -203,20 +202,20 @@ describe('backend', function () {
             .set('Accept', 'application/json')
             .expect(200)
             .end(function (err, res) {
-              should.not.exist(err);
-              res.body.jwt.should.exist;
-              var currentJwt = res.body.jwt;
-              request(app)
-                  .get('/example.kdbx/n3rnRvvOF0SvPriiFXr+Tg==')
-                  .set('Accept', 'application/json')
-                  .set('Authorization', 'Bearer ' + currentJwt)
-                  .expect(function (res) {
-                    res.body.should.have.property("length", 2)
-                    && res.body.should.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg==')
-                    && res.body.should.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==');
-                  })
-                  .expect(200, done);
-            });
+                   should.not.exist(err);
+                   res.body.jwt.should.exist;
+                   var currentJwt = res.body.jwt;
+                   request(app)
+                       .get('/example.kdbx/n3rnRvvOF0SvPriiFXr+Tg==')
+                       .set('Accept', 'application/json')
+                       .set('Authorization', 'Bearer ' + currentJwt)
+                       .expect(function (res) {
+                                 res.body.should.have.property("length", 2) &&
+                                 res.body.should.deep.have.property("[0].UUID", 'ZAw4YRw+pEic7TYfVOQ9vg==') &&
+                                 res.body.should.deep.have.property("[1].UUID", '245S+MhtfUaOzVPUwv4KMQ==');
+                               })
+                       .expect(200, done);
+                 });
       });
     });
   });
@@ -238,7 +237,7 @@ describe('backend', function () {
       after(function (done) {
         util.removeTmpDb('example-backend-test.kdbx', done);
       });
-      describe('and unknown database', function(){
+      describe('and unknown database', function () {
         it('should respond with status 404', function (done) {
 
           request(app)
@@ -304,7 +303,7 @@ describe('backend', function () {
       after(function (done) {
         util.removeTmpDb('example-backend-test.kdbx', done);
       });
-      describe('and unknown database', function(){
+      describe('and unknown database', function () {
         it('should respond with status 404', function (done) {
 
           request(app)
@@ -336,19 +335,19 @@ describe('backend', function () {
             .set('Accept', 'application/json')
             .expect(200)
             .end(function (err, res) {
-              should.not.exist(err);
-              res.body.jwt.should.exist;
-              var currentJwt = res.body.jwt;
-              request(app)
-                  .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/entry/entry-uuid')
-                  .send({entry: {UUID: "entry-uuid"}})
-                  .set('Accept', 'application/json')
-                  .set('Authorization', 'Bearer ' + currentJwt)
-                  .expect(function (res) {
-                    res.body.should.deep.have.property("UUID", "entry-uuid");
-                  })
-                  .expect(200, done);
-            });
+                   should.not.exist(err);
+                   res.body.jwt.should.exist;
+                   var currentJwt = res.body.jwt;
+                   request(app)
+                       .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/entry/entry-uuid')
+                       .send({entry: {UUID: "entry-uuid"}})
+                       .set('Accept', 'application/json')
+                       .set('Authorization', 'Bearer ' + currentJwt)
+                       .expect(function (res) {
+                                 res.body.should.deep.have.property("UUID", "entry-uuid");
+                               })
+                       .expect(200, done);
+                 });
       });
     });
   });

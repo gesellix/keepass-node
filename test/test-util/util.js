@@ -20,8 +20,8 @@ var removeTmpDb = function (filename, done) {
   });
 };
 
-exports.resourcesDir = resourcesDir;
+module.exports.resourcesDir = resourcesDir;
 
-exports.createTmpDb = createTmpDb;
+module.exports.createTmpDb = createTmpDb;
 
-exports.removeTmpDb = removeTmpDb;
+module.exports.removeTmpDb = removeTmpDb;

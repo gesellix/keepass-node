@@ -1,10 +1,16 @@
 {
+  "curly": true,
   "undef": true,
   "unused": true,
   "predef": [
     "__dirname",
     "console",
     "module",
-    "require"
+    "require",
+    "before",
+    "after",
+    "afterEach",
+    "describe",
+    "it"
   ]
 }

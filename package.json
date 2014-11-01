@@ -8,9 +8,9 @@
   },
   "main": "./lib/index.js",
   "scripts": {
-    "lint": "jshint **.js",
+    "lint": "jshint .",
     "start": "node ./server.js",
-    "test": "npm run lint; mocha --reporter spec"
+    "test": "npm run lint && mocha --reporter spec"
   },
   "dependencies": {
     "angular-jwt": "^0.0.4",

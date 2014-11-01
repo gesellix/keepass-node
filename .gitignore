@@ -4,6 +4,7 @@
 keepass-node-config.js
 
 node_modules/
+npm-debug.log
 
 certs/*
 !certs/.gitkeep

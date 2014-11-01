@@ -1,0 +1,8 @@
+{
+  "browser": true,
+  "predef": [
+    "_",
+    "angular",
+    "ZeroClipboard"
+  ]
+}
