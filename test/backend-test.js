@@ -114,6 +114,26 @@ describe('backend', function () {
             .expect(401, done);
       });
     });
+    describe('with unauthorized filename', function () {
+      it('should respond with status 401 "Unauthorized"', function (done) {
+
+        request(app)
+            .post('/databases/example.kdbx/auth')
+            .send({password: "password"})
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end(function (err, res) {
+                   should.not.exist(err);
+                   res.body.jwt.should.exist;
+                   var currentJwt = res.body.jwt;
+                   request(app)
+                       .get('/another-example.kdbx/groups')
+                       .set('Accept', 'application/json')
+                       .set('Authorization', 'Bearer ' + currentJwt)
+                       .expect(401, done);
+                 });
+      });
+    });
     describe('with valid Authorization', function () {
       it('should respond with groups tree', function (done) {
 
