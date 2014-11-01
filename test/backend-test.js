@@ -197,6 +197,48 @@ describe('backend', function () {
     });
   });
 
+  describe('PUT /:filename/:parentGroup/group/:group', function () {
+    describe('without Authorization', function () {
+      it('should respond with status 401 "Unauthorized"', function (done) {
+
+        request(app)
+            .put('/example.kdbx/aGroup/anEntryId')
+            .set('Accept', 'application/json')
+            .expect(401, done);
+      });
+    });
+    describe('with valid Authorization', function () {
+      before(function (done) {
+        util.createTmpDb('example.kdbx', 'example-backend-test.kdbx', done);
+      });
+      after(function (done) {
+        util.removeTmpDb('example-backend-test.kdbx', done);
+      });
+      it('should respond with new child group', function (done) {
+
+        request(app)
+            .post('/databases/example-backend-test.kdbx/auth')
+            .send({password: "password"})
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end(function (err, res) {
+                   should.not.exist(err);
+                   res.body.jwt.should.exist;
+                   var currentJwt = res.body.jwt;
+                   request(app)
+                       .put('/example-backend-test.kdbx/n3rnRvvOF0SvPriiFXr+Tg==/group/group-uuid')
+                       .send({group: {UUID: "group-uuid"}})
+                       .set('Accept', 'application/json')
+                       .set('Authorization', 'Bearer ' + currentJwt)
+                       .expect(function (res) {
+                                 res.body.should.deep.have.property("UUID", "group-uuid");
+                               })
+                       .expect(200, done);
+                 });
+      });
+    });
+  });
+
   describe('PUT /:filename/:group/entry/:entry', function () {
     describe('without Authorization', function () {
       it('should respond with status 401 "Unauthorized"', function (done) {
