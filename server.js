@@ -26,7 +26,7 @@
 
   if (config.basicAuth && config.basicAuth.enabled) {
     app.use(express.basicAuth(function (user, pass, callback) {
-      var isValid = (user === basicAuth.username && pass === basicAuth.password);
+      var isValid = (user === config.basicAuth.username && pass === config.basicAuth.password);
       callback(null /* error */, isValid);
     }));
   }

@@ -8,8 +8,9 @@
   },
   "main": "./lib/index.js",
   "scripts": {
+    "lint": "jshint **.js",
     "start": "node ./server.js",
-    "test": "mocha --reporter spec"
+    "test": "npm run lint; mocha --reporter spec"
   },
   "dependencies": {
     "angular-jwt": "^0.0.4",
@@ -31,6 +32,7 @@
     "coveralls": "^2.11.2",
     "fs-extra": "^0.12.0",
     "istanbul": "^0.3.2",
+    "jshint": "^2.5.8",
     "mocha": "^1.21.4",
     "supertest": "^0.14.0"
   }

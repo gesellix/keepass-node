@@ -1,0 +1,10 @@
+{
+  "undef": true,
+  "unused": true,
+  "predef": [
+    "__dirname",
+    "console",
+    "module",
+    "require"
+  ]
+}
