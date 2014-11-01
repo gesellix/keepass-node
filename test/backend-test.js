@@ -171,6 +171,30 @@ describe('backend', function () {
       });
     });
     describe('with valid Authorization', function () {
+      describe('and unknown database', function(){
+        it('should respond with status 404', function (done) {
+
+          request(app)
+              .post('/databases/example.kdbx/auth')
+              .send({password: "password"})
+              .set('Accept', 'application/json')
+              .expect(200)
+              .end(function (err, res) {
+                     should.not.exist(err);
+                     res.body.jwt.should.exist;
+                     var currentJwt = res.body.jwt;
+                     request(app)
+                         .get('/unknown.kdbx/any-uuid')
+                         .set('Accept', 'application/json')
+                         .set('Authorization', 'Bearer ' + currentJwt)
+                         .expect(function (res) {
+                                   res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
+                                 })
+                         .expect(404, done);
+                   });
+
+        });
+      });
       it('should respond with group entries', function (done) {
 
         request(app)
@@ -214,6 +238,30 @@ describe('backend', function () {
       after(function (done) {
         util.removeTmpDb('example-backend-test.kdbx', done);
       });
+      describe('and unknown database', function(){
+        it('should respond with status 404', function (done) {
+
+          request(app)
+              .post('/databases/example.kdbx/auth')
+              .send({password: "password"})
+              .set('Accept', 'application/json')
+              .expect(200)
+              .end(function (err, res) {
+                     should.not.exist(err);
+                     res.body.jwt.should.exist;
+                     var currentJwt = res.body.jwt;
+                     request(app)
+                         .put('/unknown.kdbx/any-parent-group-uuid/group/any-group-uuid')
+                         .set('Accept', 'application/json')
+                         .set('Authorization', 'Bearer ' + currentJwt)
+                         .expect(function (res) {
+                                   res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
+                                 })
+                         .expect(404, done);
+                   });
+
+        });
+      });
       it('should respond with new child group', function (done) {
 
         request(app)
@@ -255,6 +303,30 @@ describe('backend', function () {
       });
       after(function (done) {
         util.removeTmpDb('example-backend-test.kdbx', done);
+      });
+      describe('and unknown database', function(){
+        it('should respond with status 404', function (done) {
+
+          request(app)
+              .post('/databases/example.kdbx/auth')
+              .send({password: "password"})
+              .set('Accept', 'application/json')
+              .expect(200)
+              .end(function (err, res) {
+                     should.not.exist(err);
+                     res.body.jwt.should.exist;
+                     var currentJwt = res.body.jwt;
+                     request(app)
+                         .put('/unknown.kdbx/any-parent-group-uuid/entry/any-entry-uuid')
+                         .set('Accept', 'application/json')
+                         .set('Authorization', 'Bearer ' + currentJwt)
+                         .expect(function (res) {
+                                   res.body.msg.should.equal("database 'unknown.kdbx' doesn't exist");
+                                 })
+                         .expect(404, done);
+                   });
+
+        });
       });
       it('should respond with group entry', function (done) {
 
