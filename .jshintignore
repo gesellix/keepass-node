@@ -1,2 +1,3 @@
+keepass-node-config.js
 node_modules/**
 public/js/lib/**
