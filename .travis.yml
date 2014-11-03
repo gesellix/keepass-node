@@ -5,4 +5,4 @@ node_js:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -qq -y libcrypto++-dev
-after_script: npm run coverage:publish
+after_script: npm run coverage && npm run coverage:publish

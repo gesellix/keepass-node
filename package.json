@@ -15,8 +15,9 @@
     "test": "npm run lint && npm run test:backend && npm run test:frontend",
     "coverage:backend": "NODE_ENV=test istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R dot",
     "coverage:frontend": "karma start --single-run --reporters dots,coverage",
-    "coverage": "npm run coverage:backend && npm run coverage:frontend",
-    "coverage:publish": "npm run coverage && ./node_modules/.bin/lcov-result-merger 'coverage*/*.info' | ./node_modules/coveralls/bin/coveralls.js"
+    "coverage:combine": "./node_modules/.bin/lcov-result-merger 'coverage*/**/*.info' ./coverage-combined.info",
+    "coverage": "npm run coverage:backend && npm run coverage:frontend && npm run coverage:combine",
+    "coverage:publish": "cat ./coverage-combined.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "dependencies": {
     "angular-jwt": "^0.0.4",
