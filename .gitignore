@@ -3,6 +3,9 @@
 
 keepass-node-config.js
 
+coverage/
+coverage-frontend/
+
 node_modules/
 npm-debug.log
 
