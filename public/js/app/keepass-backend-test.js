@@ -25,6 +25,14 @@
       });
     });
 
+    describe('authenticate', function () {
+      it('should delegate to getDatabaseAuthToken', function () {
+        sinon.stub(kdbxBackendService, 'getDatabaseAuthToken').returns($q.when({data: {}}));
+        kdbxBackendService.authenticate('name', 'secret');
+        expect(kdbxBackendService.getDatabaseAuthToken).to.have.been.calledWith('name', 'secret');
+      });
+    });
+
     describe('backend request', function () {
       afterEach(function (done) {
         $httpBackend.flush();

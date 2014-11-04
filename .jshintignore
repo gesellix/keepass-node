@@ -1,3 +1,5 @@
 keepass-node-config.js
 node_modules/**
+coverage/**
+coverage-frontend/**
 public/js/lib/**
