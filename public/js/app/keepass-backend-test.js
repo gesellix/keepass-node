@@ -3,6 +3,7 @@
 
   describe('keepass-backend', function () {
     var $q;
+    var $rootScope;
     var $httpBackend;
     var jwtStore;
     var kdbxBackendService;
@@ -17,11 +18,12 @@
                }
              });
 
-      inject(function (_kdbxBackendService_, _jwtStore_, _$httpBackend_, _$q_) {
+      inject(function (_kdbxBackendService_, _jwtStore_, _$httpBackend_, _$q_, _$rootScope_) {
         kdbxBackendService = _kdbxBackendService_;
         jwtStore = _jwtStore_;
         $httpBackend = _$httpBackend_;
         $q = _$q_;
+        $rootScope = _$rootScope_;
       });
     });
 
@@ -31,6 +33,35 @@
         kdbxBackendService.authenticate('name', 'secret');
         expect(kdbxBackendService.getDatabaseAuthToken).to.have.been.calledWith('name', 'secret');
       });
+
+      describe('with success', function () {
+        it('should store jwt', function (done) {
+          sinon.stub(kdbxBackendService, 'getDatabaseAuthToken').returns($q.when({data: {jwt: "a.token"}}));
+          kdbxBackendService.authenticate('name', 'secret')
+              .then(function () {
+                      expect(jwtStore.saveJwt).to.have.been.calledWith("a.token");
+                      done();
+                    },
+                    function (reason) {
+                      done(reason);
+                    });
+          $rootScope.$apply();
+        });
+        it('should pass response on to caller', function (done) {
+          var expectedResponse = {data: {jwt: "a.token"}};
+          sinon.stub(kdbxBackendService, 'getDatabaseAuthToken').returns($q.when(expectedResponse));
+          kdbxBackendService.authenticate('name', 'secret')
+              .then(function (result) {
+                      expect(result).to.deep.equal(expectedResponse);
+                      done();
+                    },
+                    function (reason) {
+                      done(reason);
+                    });
+          $rootScope.$apply();
+        });
+      });
+
     });
 
     describe('backend request', function () {
