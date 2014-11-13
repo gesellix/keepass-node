@@ -62,6 +62,35 @@
         });
       });
 
+      /*jshint expr: true*/
+      describe('with failure', function () {
+        it('should clear jwt', function (done) {
+          var expectedResponse = {data: {msg: "auth failed as expected"}};
+          sinon.stub(kdbxBackendService, 'getDatabaseAuthToken').returns($q.reject(expectedResponse));
+          kdbxBackendService.authenticate('name', 'secret')
+              .then(function () {
+                      done(new Error('resolved response not expected'));
+                    },
+                    function () {
+                      expect(jwtStore.removeJwt).to.have.been.called;
+                      done();
+                    });
+          $rootScope.$apply();
+        });
+        it('should pass response as rejection on to caller', function (done) {
+          var expectedResponse = {data: {msg: "auth failed as expected"}};
+          sinon.stub(kdbxBackendService, 'getDatabaseAuthToken').returns($q.reject(expectedResponse));
+          kdbxBackendService.authenticate('name', 'secret')
+              .then(function () {
+                      done(new Error('resolved response not expected'));
+                    },
+                    function (reason) {
+                      expect(reason).to.deep.equal(expectedResponse);
+                      done();
+                    });
+          $rootScope.$apply();
+        });
+      });
     });
 
     describe('backend request', function () {
