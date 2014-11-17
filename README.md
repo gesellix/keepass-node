@@ -115,6 +115,9 @@ The frontend uses [AngularJS](http://angularjs.org/) as application framework, [
 for the keepass user navigation, [ZeroClipboard](https://github.com/zeroclipboard/zeroclipboard) for convenient "copy password" feature
 known from [GitHub](https://github.com/) and the omnipresent [Twitter Bootstrap](http://getbootstrap.com/).
 
-## Contact
+## Contributing and Contact
 [Issues](https://github.com/gesellix/keepass-node/issues) and [pull requests](https://github.com/gesellix/keepass-node/pulls) can be submitted via GitHub.
 You may contact me via Twitter: [@gesellix](https://twitter.com/gesellix).
+
+## License
+See [Apache 2 License](LICENSE).
