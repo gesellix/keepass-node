@@ -28,7 +28,7 @@
     "express-jwt": "^0.4.0",
     "googleapis": "^1.0.14",
     "jsonwebtoken": "^1.1.2",
-    "keepass.io": "git://github.com/NeoXiD/keepass.io.git#feature/basic-api",
+    "keepass.io": "^1.1.0",
     "node-uuid": "^1.4.1",
     "q": "^1.0.1",
     "underscore": "^1.7.0"
