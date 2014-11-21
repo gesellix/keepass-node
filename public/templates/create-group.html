@@ -2,16 +2,16 @@
     <md-content class="dialog-content">
 
         <md-subheader class="sticky-no-effect">New subgroup in group <b>{{parent.Name}}</b></md-subheader>
-        <div layout="vertical">
+        <div layout="column">
             <md-text-float label="Name" ng-model="group.Name"></md-text-float>
         </div>
     </md-content>
 
-    <div class="dialog-actions" layout="horizontal" layout-align="end">
-        <md-button ng-click="cancel()" class="md-theme-red">
+    <div class="dialog-actions" layout="row" layout-align="end">
+        <md-button ng-click="cancel()" class="md-raised md-primary" md-theme="red">
             Cancel
         </md-button>
-        <md-button ng-click="save()" class="md-theme-green">
+        <md-button ng-click="save()" class="md-raised md-primary" md-theme="green">
             Save
         </md-button>
     </div>

@@ -6,8 +6,8 @@
         </h4>
 
         <div id="collapse{{kdbxEntryIndex}}" ng-show="collapse">
-            <div layout="vertical" layout-padding>
-                <div layout="horizontal" layout-padding>
+            <div layout="column" layout-padding>
+                <div layout="row" layout-padding>
                     <md-input-group>
                         <label>Title</label>
                         <md-input ng-model="entry.Title" ng-readonly="true"></md-input>
@@ -19,7 +19,7 @@
                     </md-input-group>
                     <!--<div flex="80"><a ng-href="{{entry.URL}}" target="_blank">{{entry.URL}}</a></div>-->
                 </div>
-                <div layout="horizontal" layout-padding>
+                <div layout="row" layout-padding>
                     <md-input-group>
                         <label>UserName</label>
                         <md-input ng-model="entry.UserName" ng-readonly="true"></md-input>
@@ -46,7 +46,7 @@
                         <md-input ng-model="entry.Password" ng-readonly="true"></md-input>
                     </md-input-group>
                 </div>
-                <div layout="horizontal" layout-padding>
+                <div layout="row" layout-padding>
                     <md-input-group>
                         <label>Notes</label>
                         <md-input ng-model="entry.Notes" ng-readonly="true"></md-input>
