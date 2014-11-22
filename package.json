@@ -44,6 +44,7 @@
     "karma-cli": "^0.0.4",
     "karma-coverage": "^0.2.6",
     "karma-mocha": "^0.1.9",
+    "karma-ng-html2js-preprocessor": "^0.1.2",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sinon-chai": "^0.2.0",
     "lcov-result-merger": "^1.0.0",

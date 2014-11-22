@@ -19,6 +19,7 @@ module.exports = function (config) {
           'public/js/lib/angular-jwt/angular-jwt.min.js',
           'public/js/lib/treeview/angular.treeview.min.js',
           'public/js/lib/zeroclipboard/ZeroClipboard.min.js',
+          'public/templates/**/*.html',
           'public/js/app/zeroclipboard-config.js',
           'public/js/app/**/*.js'
         ],
@@ -32,6 +33,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
+          'public/templates/**/*.html': ['ng-html2js'],
           'public/js/app/**/!(*test).js': 'coverage'
         },
 
@@ -42,6 +44,14 @@ module.exports = function (config) {
         coverageReporter: {
           type: 'lcov',
           dir: 'coverage-frontend/'
+        },
+
+        ngHtml2JsPreprocessor: {
+          stripPrefix: 'public/',
+
+          // setting this option will create only a single module that contains templates
+          // from all the files, so you can load them all with module('templates')
+          moduleName: 'templates'
         },
 
         // web server port
