@@ -13,18 +13,12 @@
       Notes: {isProtected: false}
     };
 
-    var getValueFromKdbxEntry = function (kdbxEntry, key) {
-      var hit = _.findWhere(kdbxEntry.String, {Key: key});
-      if (!hit) {
-        return '';
+    var getValueFromKdbxEntry = function (hit, key) {
+      if (supportedProperties[key].isProtected) {
+        return hit.Value._;
       }
       else {
-        if (supportedProperties[key].isProtected) {
-          return hit.Value._;
-        }
-        else {
-          return hit.Value;
-        }
+        return hit.Value;
       }
     };
 
@@ -33,7 +27,10 @@
         UUID: kdbxEntry.UUID
       };
       _.each(supportedProperties, function (value, key) {
-        entry[key] = getValueFromKdbxEntry(kdbxEntry, key);
+        var hit = _.findWhere(kdbxEntry.String, {Key: key});
+        if (hit) {
+          entry[key] = getValueFromKdbxEntry(hit, key);
+        }
       });
       return entry;
     };
@@ -56,11 +53,13 @@
         String: []
       };
       _.each(supportedProperties, function (value, key) {
-        if (value.isProtected) {
-          kdbxEntry.String.push(newProtectedEntry(key, entry[key]));
-        }
-        else {
-          kdbxEntry.String.push({Key: key, Value: entry[key]});
+        if (entry[key]) {
+          if (value.isProtected) {
+            kdbxEntry.String.push(newProtectedEntry(key, entry[key]));
+          }
+          else {
+            kdbxEntry.String.push({Key: key, Value: entry[key]});
+          }
         }
       });
       return kdbxEntry;
