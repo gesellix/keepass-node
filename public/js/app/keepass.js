@@ -3,7 +3,7 @@
 
   var keepass = angular.module('keepass', ['init', 'toast', 'dialog', 'angularTreeview', 'keepass-entries', 'keepass-backend']);
 
-  keepass.controller('keepassBrowser', function ($scope, toast, dialog, init, kdbxBackendService) {
+  keepass.controller('keepassManager', function ($scope, toast, dialog, init, kdbxBackendService) {
     $scope.message = null;
 
     $scope.loading = true;
@@ -124,7 +124,7 @@
       }
     };
 
-    init('keepassBrowser', [kdbxBackendService.getDatabases()], function (result) {
+    init('keepass-manager', [kdbxBackendService.getDatabases()], function (result) {
       $scope.databases = result[0].data.databases;
       if ($scope.databases && $scope.databases.length === 1) {
         $scope.selectedDb = $scope.databases[0];

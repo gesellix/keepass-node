@@ -6,13 +6,13 @@
   init.factory('init', function ($q, $rootScope, $browser) {
 
     var initFunctions = [
-      'keepassBrowser'
+      'keepass-manager'
     ];
     var registeredInitFunctions = {};
     var initialized = false;
 
     var initApplication = function () {
-      var keepassBrowser = registeredInitFunctions.keepassBrowser;
+      var keepassManager = registeredInitFunctions['keepass-manager'];
 
       var broadcastAppInitialized = function () {
         $browser.defer(function () {
@@ -22,7 +22,7 @@
           });
         });
       };
-      keepassBrowser.init()
+      keepassManager.init()
           .then(broadcastAppInitialized);
     };
 
