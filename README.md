@@ -15,7 +15,8 @@ KeePass-Node is based on the idea of [BrowsePass](http://bitbucket.org/namn/brow
 to open a file from your current filesystem or from a URL by using only browser based libraries.
 
 While it's a great step forward to use a browser based KeePass reader, I don't want to ~~save my keepass file
-in any cloud~~ (I guess I changed my mind - see below for Google Drive sync) or keep it with me on a USB stick all the time.
+in any cloud~~ (I guess I changed my mind - see below for [Google Drive sync](https://github.com/gesellix/keepass-node#download-from-google-drive))
+or keep it with me on a USB stick all the time.
 I expect to mostly have internet access, so what about saving my keepass file on my private server
 and access it by a tool like BrowserPass?
 For the typical usage of only reading from my keepass file, that would be enough.
