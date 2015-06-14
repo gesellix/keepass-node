@@ -2,31 +2,21 @@ FROM node:0.10
 
 RUN apt-get update && apt-get install -y libcrypto++-dev
 
-RUN mkdir -p /opt/keepass/{certs,local}
+EXPOSE 8443
 
-ADD ./package.json /opt/keepass/package.json
-RUN cd /opt/keepass && npm install
+ENV NODE_ENV production
 
-ADD ./lib /opt/keepass/
-ADD ./public /opt/keepass/
-ADD ./README.md /opt/keepass/
-ADD ./keepass-node-config.template.js /opt/keepass/
-ADD ./server.js /opt/keepass/
+WORKDIR /keepass/
+RUN mkdir -p /keepass/certs && mkdir -p /keepass/local
 
-WORKDIR /opt/keepass
+ADD ./run-keepass.sh /keepass/run-keepass.sh
+CMD ["bash", "-c", "/keepass/run-keepass.sh"]
 
-# using the volumes with a dedicated data container:
-#  docker run -d -v /opt/ghost/content/data -v /opt/ghost/content/images --name ghost-data ubuntu:14.04 true
-#  docker run -d --volumes-from ghost-data -v `pwd`/config.js:/opt/ghost/config.js -p 2368:2368 gesellix/gesellix.net
+ADD ./package.json /keepass/package.json
+RUN npm install --production
 
-# create a data container backup:
-#  docker run --volumes-from ghost-data -v `pwd`:/backup ubuntu:14.04 tar cfvz /backup/ghost-data.tgz /opt/ghost/content/data
-#  docker run --volumes-from ghost-data -v `pwd`:/backup ubuntu:14.04 tar cfvz /backup/ghost-images.tgz /opt/ghost/content/images
-
-# restore a container backup:
-#  docker run --volumes-from ghost-data -v `pwd`:/backup ubuntu:14.04 tar xfvz /backup/ghost-data.tgz
-#  docker run --volumes-from ghost-data -v `pwd`:/backup ubuntu:14.04 tar xfvz /backup/ghost-images.tgz
-
-EXPOSE 443
-
-CMD ["npm", "start"]
+ADD ./lib /keepass/lib
+ADD ./public /keepass/public
+ADD ./README.md /keepass/
+ADD ./keepass-node-config.template.js /keepass/
+ADD ./server.js /keepass/
