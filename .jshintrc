@@ -4,6 +4,7 @@
   "unused": true,
   "predef": [
     "__dirname",
+    "process",
     "console",
     "module",
     "require",
