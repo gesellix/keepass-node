@@ -3,6 +3,7 @@ FROM node:0.10
 RUN apt-get update && apt-get install -y libcrypto++-dev
 
 EXPOSE 8443
+ENV PORT 8443
 
 ENV NODE_ENV production
 

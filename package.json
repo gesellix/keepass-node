@@ -31,6 +31,7 @@
     "keepass.io": "^1.1.2",
     "node-uuid": "^1.4.3",
     "q": "^1.4.1",
+    "require-optional": "^0.2.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

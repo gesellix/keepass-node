@@ -1,13 +1,15 @@
 (function () {
   "use strict";
 
+  var optional = require('require-optional');
   var _ = require('underscore');
   var crypto = require('crypto');
 
   var cryptKey = crypto.randomBytes(256).toString('hex');
   var jwtSecret = crypto.randomBytes(256).toString('hex');
 
-  var config = require('./keepass-node-config');
+  var port = process.env.PORT || 8443;
+  var config = optional('./keepass-node-config', {"port": port});
   config = _.extend({
                       databaseDir: __dirname + '/local/',
                       publicResourcesDir: __dirname + '/public/',
