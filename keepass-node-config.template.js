@@ -2,6 +2,11 @@ var config = {
   "port": 8443
 };
 
+// optional: when running behind a context path (yay, container speak)
+// this is the place where you can tell the frontend where it can
+// find backend resources.
+//config.contextPath = '/keepass/';
+
 // optional: configure https support
 //
 //var fs = require('fs');
