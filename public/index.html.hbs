@@ -3,9 +3,17 @@
 <head>
     <title>KeePass 2 Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%#basePath%>
-    <base href="<% basePath %>">
-    <%/basePath%>
+    <%#contextPath%>
+    <base href="<% contextPath %>">
+    <script>
+        window.contextPath = "<% contextPath %>";
+    </script>
+    <%/contextPath%>
+    <%^contextPath%>
+    <script>
+        window.contextPath = "/";
+    </script>
+    <%/contextPath%>
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/angular-material.min.css"/>
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/themes/green-theme.css">
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/themes/red-theme.css">
