@@ -27,6 +27,7 @@
     "express": "^4.12.4",
     "express-jwt": "^3.0.1",
     "googleapis": "^2.0.5",
+    "hogan.js": "^3.0.2",
     "jsonwebtoken": "^5.0.1",
     "keepass.io": "^1.1.2",
     "node-uuid": "^1.4.3",

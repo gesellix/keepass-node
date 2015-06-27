@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KeePass 2 reader</title>
+    <title>KeePass 2 Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <%#basePath%>
+    <base href="<% basePath %>">
+    <%/basePath%>
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/angular-material.min.css"/>
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/themes/green-theme.css">
     <link rel="stylesheet" type="text/css" href="js/lib/angular-material/themes/red-theme.css">
@@ -11,12 +13,14 @@
     <link rel="stylesheet" type="text/css" href="css/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
-    <!--<script type="text/javascript">-->
-        <!--less = {-->
-            <!--env: "production"-->
-        <!--};-->
-    <!--</script>-->
-    <!--<script src="js/lib/less/less-1.7.5.min.js" type="text/javascript"></script>-->
+    <!--
+        <script type="text/javascript">
+            less = {
+                env: "production"
+            };
+        </script>
+        <script src="js/lib/less/less-1.7.5.min.js" type="text/javascript"></script>
+    -->
     <script src="js/lib/underscore/underscore-min.js" type="text/javascript"></script>
     <script src="js/lib/jquery/jquery-1.11.1.min.js"></script>
     <script src="js/lib/angular/angular.min.js"></script>
@@ -61,7 +65,7 @@
 
                         <md-radio-group ng-model="selectedDb" id="databases">
                             <md-radio-button ng-repeat="db in databases" ng-value="db" aria-label="{{ db }}">
-                                {{ db }}
+                              {{ db }}
                             </md-radio-button>
                         </md-radio-group>
                     </md-input-group>
@@ -119,7 +123,7 @@
 
         <footer>
             <div ng-show="message">
-                <p>{{message}}
+                <p>{{ message }}
                     <md-progress-linear mode="indeterminate"></md-progress-linear>
                 </p>
             </div>
