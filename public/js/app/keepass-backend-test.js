@@ -103,7 +103,7 @@
 
       describe('getDatabases', function () {
         it('should return result from GET /databases', function () {
-          $httpBackend.whenGET("/databases")
+          $httpBackend.whenGET("databases")
               .respond(200, [{key: "value"}]);
           kdbxBackendService.getDatabases().success(function (data) {
             expect(data).to.deep.equal([{key: "value"}]);
@@ -113,7 +113,7 @@
 
       describe('getDatabaseAuthToken', function () {
         it('should return result from POST /databases/:filename/auth', function () {
-          $httpBackend.whenPOST("/databases/a%20filename/auth", {password: "a password"})
+          $httpBackend.whenPOST("databases/a%20filename/auth", {password: "a password"})
               .respond(200, {jwt: "t.o.k.e.n"});
           kdbxBackendService.getDatabaseAuthToken('a filename', 'a password').success(function (data) {
             expect(data).to.deep.equal({jwt: 't.o.k.e.n'});
@@ -123,7 +123,7 @@
 
       describe('getGroups', function () {
         it('should return result from GET /:filename/groups', function () {
-          $httpBackend.whenGET("/a%20filename/groups")
+          $httpBackend.whenGET("a%20filename/groups")
               .respond(200, [{UUID: "1"}, {UUID: "2"}]);
           kdbxBackendService.getGroups('a filename').success(function (data) {
             expect(data).to.deep.equal([{UUID: "1"}, {UUID: "2"}]);
@@ -133,7 +133,7 @@
 
       describe('getEntries', function () {
         it('should return result from GET /:filename/:group', function () {
-          $httpBackend.whenGET("/a%20filename/a%20group")
+          $httpBackend.whenGET("a%20filename/a%20group")
               .respond(200, [{UUID: "entry-1"}, {UUID: "entry-2"}]);
           kdbxBackendService.getEntries('a filename', 'a group').success(function (data) {
             expect(data).to.deep.equal([{UUID: "entry-1"}, {UUID: "entry-2"}]);
@@ -143,7 +143,7 @@
 
       describe('addGroup', function () {
         it('should return result from PUT /:filename/:parentGroup/group/:group', function () {
-          $httpBackend.whenPUT("/a%20filename/a%20parent-group/group/a%2Fgroup", {group: {UUID: "a/group"}})
+          $httpBackend.whenPUT("a%20filename/a%20parent-group/group/a%2Fgroup", {group: {UUID: "a/group"}})
               .respond(200, {UUID: "a/group"});
           kdbxBackendService.addGroup('a filename', 'a parent-group', {UUID: "a/group"}).success(function (data) {
             expect(data).to.deep.equal({UUID: "a/group"});
@@ -153,7 +153,7 @@
 
       describe('addEntry', function () {
         it('should return result from PUT /:filename/:parentGroup/entry/:entry', function () {
-          $httpBackend.whenPUT("/a%20filename/a%20parent-group/entry/an%2Fentry", {entry: {UUID: "an/entry"}})
+          $httpBackend.whenPUT("a%20filename/a%20parent-group/entry/an%2Fentry", {entry: {UUID: "an/entry"}})
               .respond(200, {UUID: "an/entry"});
           kdbxBackendService.addEntry('a filename', 'a parent-group', {UUID: "an/entry"}).success(function (data) {
             expect(data).to.deep.equal({UUID: "an/entry"});
