@@ -32,7 +32,9 @@ First, you need Node.js running on your server of choice and navigate to a suita
 ~$ cd keepass-node
 ````
 You'll find a config template `keepass-node-config.template.js` which shows you how to configure port (default 8443),
-https (optional),  basic authentication (optional) and Google Drive sync (optional). Optional features are disabled by default.
+an optional context path (also known as base path), https (optional), basic authentication (optional),
+ and Google Drive sync (optional).
+Optional features are disabled by default.
 
 To give KeePass-Node a minimal config you need to create a file `keepass-node-config.js` in the project's root
 folder and paste at least something like this:
