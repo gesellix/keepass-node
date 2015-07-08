@@ -105,9 +105,10 @@ A browser refresh later, and you can choose the updated `google-drive.kdbx` from
 ## Next
 There already are some ideas on improving this little tool:
 * your ideas are welcome!
-* [keepass write support](https://github.com/gesellix/keepass-node/issues/2) (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
+* improve [keepass write support](https://github.com/gesellix/keepass-node/issues/2) (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
 * add keyfile support
-* use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/)
+* use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/). See [the issue](https://github.com/gesellix/keepass-node/issues/4) for a start.
+* and what about the hype on the whole [React](http://facebook.github.io/react/) thingy?
 
 ## Technical details
 As mentioned above I wanted to use the BrowserPass concept to read `.kdbx` files. Well, I tried to use its code and converted it to a little
