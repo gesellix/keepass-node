@@ -45,8 +45,5 @@
   "permissions": [
     "activeTab"
   ],
-  "storage": {
-    "managed_schema": "src/storage/schema.json"
-  },
   "web_accessible_resources": []
 }
