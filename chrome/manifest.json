@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "KeePass Manager",
+  "short_name": "KeePass Manager",
+  "version": "1.0",
+  "default_locale": "en",
+  "description": "This extension will allow you to manage your secrets in a KeePass vault",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": "icons/icon19.png",
+    "default_popup": "assets/popup.html",
+    "default_title": "KeePass Manager"
+  },
+  "author": "Tobias Gesellchen",
+  "content_scripts": [],
+  "content_security_policy": "policyString",
+  "file_browser_handlers": [],
+  "file_system_provider_capabilities": {
+    "configurable": true,
+    "multiple_mounts": true,
+    "source": "network"
+  },
+  "offline_enabled": true,
+  "options_page": "assets/options.html",
+  "options_ui": {
+    "chrome_style": true,
+    "page": "assets/options.html"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "storage": {
+    "managed_schema": "assets/schema.json"
+  },
+  "web_accessible_resources": []
+}
