@@ -12,12 +12,28 @@
   },
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_popup": "assets/popup.html",
+    "default_popup": "src/browser_action/browser_action.html",
     "default_title": "KeePass Manager"
   },
   "author": "Tobias Gesellchen",
-  "content_scripts": [],
-  "content_security_policy": "policyString",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/*"
+      ],
+      "css": [
+        "src/inject/inject.css"
+      ]
+    },
+    {
+      "matches": [
+        "https://www.google.com/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ]
+    }
+  ],
   "file_browser_handlers": [],
   "file_system_provider_capabilities": {
     "configurable": true,
@@ -25,16 +41,12 @@
     "source": "network"
   },
   "offline_enabled": true,
-  "options_page": "assets/options.html",
-  "options_ui": {
-    "chrome_style": true,
-    "page": "assets/options.html"
-  },
+  "options_page": "src/options_custom/index.html",
   "permissions": [
     "activeTab"
   ],
   "storage": {
-    "managed_schema": "assets/schema.json"
+    "managed_schema": "src/storage/schema.json"
   },
   "web_accessible_resources": []
 }
