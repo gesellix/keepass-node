@@ -17,3 +17,4 @@ local/*
 !local/example.kdbx
 !local/example.raw.json
 !local/example.kdbx.txt
+.DS_Store
