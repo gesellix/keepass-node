@@ -1,7 +1,8 @@
 {
   "name": "keepass-node",
   "version": "0.0.1",
-  "description": "KeePass2 reader for Node.js with a browser frontend",
+  "description": "KeePass2 editor for Node.js with a browser frontend",
+  "license" : "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/gesellix/keepass-node.git"
