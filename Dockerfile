@@ -1,6 +1,7 @@
 FROM node:4
 
-RUN apt-get update && apt-get install -y libcrypto++-dev
+RUN apt-get update && apt-get install -y libcrypto++-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 8443
 ENV PORT 8443
