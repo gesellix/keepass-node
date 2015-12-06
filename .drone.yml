@@ -1,0 +1,7 @@
+# this is for drone v0.4
+build:
+  image: node:0.12
+  pull: true
+  commands:
+    - npm install
+    - npm run test
