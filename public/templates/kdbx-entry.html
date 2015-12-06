@@ -2,7 +2,8 @@
     <form role="form" ng-submit="">
 
         <h4>
-            <span style="cursor:pointer;" ng-model="collapse[kdbxEntryIndex]" ng-click="collapse[kdbxEntryIndex] = !collapse[kdbxEntryIndex]">{{entry.Title}}</span>
+            <span style="cursor:pointer;" ng-model="collapse[kdbxEntryIndex]"
+                  ng-click="collapse[kdbxEntryIndex] = !collapse[kdbxEntryIndex]">{{entry.Title}}</span>
         </h4>
 
         <div id="collapse{{kdbxEntryIndex}}" ng-show="collapse[kdbxEntryIndex]">

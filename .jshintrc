@@ -1,17 +1,17 @@
 {
-  "curly": true,
-  "undef": true,
-  "unused": true,
-  "predef": [
-    "__dirname",
-    "process",
-    "console",
-    "module",
-    "require",
-    "before",
-    "after",
-    "afterEach",
-    "describe",
-    "it"
-  ]
+    "curly": true,
+    "undef": true,
+    "unused": true,
+    "predef": [
+        "__dirname",
+        "process",
+        "console",
+        "module",
+        "require",
+        "before",
+        "after",
+        "afterEach",
+        "describe",
+        "it"
+    ]
 }

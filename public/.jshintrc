@@ -1,8 +1,8 @@
 {
-  "browser": true,
-  "predef": [
-    "_",
-    "angular",
-    "Clipboard"
-  ]
+    "browser": true,
+    "predef": [
+        "_",
+        "angular",
+        "Clipboard"
+    ]
 }

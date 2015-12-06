@@ -1,5 +1,5 @@
 var config = {
-  "port": 8443
+    "port": 8443
 };
 
 // optional: when running behind a context path (yay, container speak)

@@ -31,53 +31,53 @@
         $scope.createGroup = function (event) {
             var parentGroup = $scope.kdbxTree.currentNode;
             dialog.newGroup(event, parentGroup)
-                .then(function (newGroup) {
-                    $scope.message = "adding group...";
-                    kdbxBackendService.addGroup($scope.selectedDb, parentGroup.UUID, newGroup)
-                        .then(function () {
-                            $scope.message = '';
-                            //TODO update view with new group
-                            toast.info("group successfully added");
-                        },
-                        function (reason) {
-                            $scope.message = '';
-                            console.log(reason);
-                            if (reason.data && reason.data.msg) {
-                                toast.error(reason.data.msg);
-                            }
-                            else {
-                                toast.error("add group HTTP status: " + reason.status);
-                            }
-                        });
-                }, function () {
-                    // user has cancelled
-                });
+                    .then(function (newGroup) {
+                        $scope.message = "adding group...";
+                        kdbxBackendService.addGroup($scope.selectedDb, parentGroup.UUID, newGroup)
+                                .then(function () {
+                                            $scope.message = '';
+                                            //TODO update view with new group
+                                            toast.info("group successfully added");
+                                        },
+                                        function (reason) {
+                                            $scope.message = '';
+                                            console.log(reason);
+                                            if (reason.data && reason.data.msg) {
+                                                toast.error(reason.data.msg);
+                                            }
+                                            else {
+                                                toast.error("add group HTTP status: " + reason.status);
+                                            }
+                                        });
+                    }, function () {
+                        // user has cancelled
+                    });
         };
 
         $scope.createEntry = function (event) {
             var parentGroup = $scope.kdbxTree.currentNode;
             dialog.newEntry(event, parentGroup)
-                .then(function (newEntry) {
-                    $scope.message = "adding entry...";
-                    kdbxBackendService.addEntry($scope.selectedDb, parentGroup.UUID, newEntry)
-                        .then(function () {
-                            $scope.message = '';
-                            //TODO update view with new entry
-                            toast.info("entry successfully added");
-                        },
-                        function (reason) {
-                            $scope.message = '';
-                            console.log(reason);
-                            if (reason.data && reason.data.msg) {
-                                toast.error(reason.data.msg);
-                            }
-                            else {
-                                toast.error("add entry HTTP status: " + reason.status);
-                            }
-                        });
-                }, function () {
-                    // user has cancelled
-                });
+                    .then(function (newEntry) {
+                        $scope.message = "adding entry...";
+                        kdbxBackendService.addEntry($scope.selectedDb, parentGroup.UUID, newEntry)
+                                .then(function () {
+                                            $scope.message = '';
+                                            //TODO update view with new entry
+                                            toast.info("entry successfully added");
+                                        },
+                                        function (reason) {
+                                            $scope.message = '';
+                                            console.log(reason);
+                                            if (reason.data && reason.data.msg) {
+                                                toast.error(reason.data.msg);
+                                            }
+                                            else {
+                                                toast.error("add entry HTTP status: " + reason.status);
+                                            }
+                                        });
+                    }, function () {
+                        // user has cancelled
+                    });
         };
 
         $scope.loadGroups = function () {
@@ -85,37 +85,15 @@
             $scope.groupEntries = [];
             $scope.message = "authenticate...";
             kdbxBackendService.authenticate($scope.selectedDb, $scope.dbPassword)
-                .then(function () {
-                    $scope.message = "loading...";
-                    return kdbxBackendService.getGroups($scope.selectedDb);
-                })
-                .then(function (result) {
-                    $scope.message = '';
-                    toast.info("groups successfully loaded");
-                    onGroupsLoaded(result.data);
-                }, function (reason) {
-                    $scope.message = '';
-                    console.log(reason);
-                    if (reason.data && reason.data.msg) {
-                        toast.error(reason.data.msg);
-                    }
-                    else {
-                        toast.error("load groups HTTP status: " + reason.status);
-                    }
-                });
-        };
-
-        var onNodeSelected = function () {
-            if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
-                $scope.message = "loading...";
-                $scope.groupEntries = [];
-                kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
+                    .then(function () {
+                        $scope.message = "loading...";
+                        return kdbxBackendService.getGroups($scope.selectedDb);
+                    })
                     .then(function (result) {
                         $scope.message = '';
-                        toast.info("entries successfully loaded");
-                        onGroupSelected(result.data);
-                    },
-                    function (reason) {
+                        toast.info("groups successfully loaded");
+                        onGroupsLoaded(result.data);
+                    }, function (reason) {
                         $scope.message = '';
                         console.log(reason);
                         if (reason.data && reason.data.msg) {
@@ -125,6 +103,28 @@
                             toast.error("load groups HTTP status: " + reason.status);
                         }
                     });
+        };
+
+        var onNodeSelected = function () {
+            if ($scope.kdbxTree && angular.isObject($scope.kdbxTree.currentNode)) {
+                $scope.message = "loading...";
+                $scope.groupEntries = [];
+                kdbxBackendService.getEntries($scope.selectedDb, $scope.kdbxTree.currentNode.UUID)
+                        .then(function (result) {
+                                    $scope.message = '';
+                                    toast.info("entries successfully loaded");
+                                    onGroupSelected(result.data);
+                                },
+                                function (reason) {
+                                    $scope.message = '';
+                                    console.log(reason);
+                                    if (reason.data && reason.data.msg) {
+                                        toast.error(reason.data.msg);
+                                    }
+                                    else {
+                                        toast.error("load groups HTTP status: " + reason.status);
+                                    }
+                                });
             }
         };
 
