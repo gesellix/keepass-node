@@ -1,0 +1,6 @@
+build:
+  image: node:4
+  pull: true
+  commands:
+    - npm install
+    - npm run test
