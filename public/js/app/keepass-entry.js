@@ -11,9 +11,9 @@
         kdbxEntry: '=',
         kdbxEntryIndex: '='
       },
-      link: function (scope, element) {
+      link: function (scope) {
         scope.showPassword = false;
-        new ZeroClipboard(element.find('.copy-password-btn'));
+        new Clipboard('.copy-password-btn');
       },
       controller: function ($scope) {
         $scope.entry = entryTransformer.fromKdbxEntry($scope.kdbxEntry);

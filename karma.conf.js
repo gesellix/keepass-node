@@ -18,9 +18,8 @@ module.exports = function (config) {
           'public/js/lib/angular-material/angular-material.js',
           'public/js/lib/angular-jwt/angular-jwt.min.js',
           'public/js/lib/treeview/angular.treeview.min.js',
-          'public/js/lib/zeroclipboard/ZeroClipboard.min.js',
+          'public/js/lib/clipboard/clipboard.min.js',
           'public/templates/**/*.html',
-          'public/js/app/zeroclipboard-config.js',
           'public/js/app/**/*.js'
         ],
 

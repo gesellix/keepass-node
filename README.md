@@ -105,7 +105,7 @@ A browser refresh later, and you can choose the updated `google-drive.kdbx` from
 ## Next
 There already are some ideas on improving this little tool:
 * your ideas are welcome!
-* improve [keepass write support](https://github.com/gesellix/keepass-node/issues/2) (probably don't reinvent the wheel, when the keepass.io author is [already working on it](https://github.com/NeoXiD/keepass.io/issues/8))
+* improve [keepass write support](https://github.com/gesellix/keepass-node/issues/2) (with tight dependency on [keepass.io](https://github.com/NeoXiD/keepass.io/issues/8))
 * add keyfile support
 * use the same concept of [keepasshttp](https://github.com/pfn/keepasshttp) to support browser plugins like [passifox](https://github.com/pfn/passifox/). See [the issue](https://github.com/gesellix/keepass-node/issues/4) for a start.
 * and what about the hype on the whole [React](http://facebook.github.io/react/) thingy?
@@ -116,8 +116,8 @@ node module. That wasn't much fun and the result wasn't beautiful (you may find 
 so I searched for an existing node module and found a working one named [keepass.io](https://github.com/NeoXiD/keepass.io).
 
 The frontend uses [AngularJS](http://angularjs.org/) as application framework, [Angular Treeview](https://github.com/eu81273/angular.treeview)
-for the keepass user navigation, [ZeroClipboard](https://github.com/zeroclipboard/zeroclipboard) for convenient "copy password" feature
-known from [GitHub](https://github.com/) and the omnipresent [Twitter Bootstrap](http://getbootstrap.com/).
+for the keepass entry navigation, [clipboard.js](http://clipboardjs.com/) for convenient "copy password",
+ and the [Angular Material](https://material.angularjs.org/) for the ui and interaction stuff.
 
 ## Contributing and Contact
 [Issues](https://github.com/gesellix/keepass-node/issues) and [pull requests](https://github.com/gesellix/keepass-node/pulls) can be submitted via GitHub.
