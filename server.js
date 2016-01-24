@@ -2,7 +2,7 @@
     "use strict";
 
     var optional = require('require-optional');
-    var _ = require('underscore');
+    var _ = require('lodash');
     var crypto = require('crypto');
 
     var cryptKey = crypto.randomBytes(256).toString('hex');
@@ -27,10 +27,7 @@
     app.use(require("compression")());
 
     if (config.basicAuth && config.basicAuth.enabled) {
-        app.use(express.basicAuth(function (user, pass, callback) {
-            var isValid = (user === config.basicAuth.username && pass === config.basicAuth.password);
-            callback(null /* error */, isValid);
-        }));
+        app.use(keepassLib.BasicAuth(config));
     }
 
     if (config.googleDrive && config.googleDrive.enabled) {

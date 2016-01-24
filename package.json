@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "angular-jwt": "^0.0.9",
+        "basic-auth": "^1.0.3",
         "body-parser": "^1.14.1",
         "clipboard": "^1.5.5",
         "compression": "^1.6.0",
@@ -33,10 +34,10 @@
         "jsonwebtoken": "^5.4.1",
         "jws": "^3.1.0",
         "keepass.io": "^1.1.3",
+        "lodash": "^4.0.0",
         "node-uuid": "^1.4.7",
         "q": "^1.4.1",
-        "require-optional": "^0.3.0",
-        "underscore": "^1.8.3"
+        "require-optional": "^0.3.0"
     },
     "devDependencies": {
         "chai": "^3.0.0",

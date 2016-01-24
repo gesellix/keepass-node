@@ -1,6 +1,6 @@
 var express = require('express');
 var request = require('supertest');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var googleDriveConfig = {
     "clientSecret": {
