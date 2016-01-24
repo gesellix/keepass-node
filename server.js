@@ -27,7 +27,7 @@
     app.use(require("compression")());
 
     if (config.basicAuth && config.basicAuth.enabled) {
-        app.use(keepassLib.BasicAuth(config));
+        app.use(keepassLib.BasicAuth(config.basicAuth));
     }
 
     if (config.googleDrive && config.googleDrive.enabled) {
