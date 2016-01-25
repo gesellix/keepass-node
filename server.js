@@ -3,22 +3,32 @@
 
     var optional = require('require-optional');
     var _ = require('lodash');
+
     var crypto = require('crypto');
 
-    var cryptKey = crypto.randomBytes(256).toString('hex');
-    var jwtSecret = crypto.randomBytes(256).toString('hex');
+    var generateKey = function () {
+        return crypto.randomBytes(256).toString('hex');
+    };
 
-    var port = process.env.PORT || 8443;
-    var config = optional('./keepass-node-config', {"port": port});
-    config = _.extend({
-        databaseDir: __dirname + '/local/',
-        publicResourcesDir: __dirname + '/public/',
+    var readConfig = function () {
+        var port = process.env.PORT || 8443;
 
-        cryptKey: cryptKey,
-        jwtSecret: jwtSecret,
-        jwtUserProperty: 'jwt'
-    }, config);
+        var cryptKey = generateKey();
+        var jwtSecret = generateKey();
 
+        var config = optional('./keepass-node-config', {"port": port});
+        config = _.extend({
+            databaseDir: __dirname + '/local/',
+            publicResourcesDir: __dirname + '/public/',
+
+            cryptKey: cryptKey,
+            jwtSecret: jwtSecret,
+            jwtUserProperty: 'jwt'
+        }, config);
+        return config;
+    };
+
+    var config = readConfig();
     var keepassLib = require('./lib');
 
     var express = require('express');
@@ -31,6 +41,7 @@
     }
 
     if (config.googleDrive && config.googleDrive.enabled) {
+        // TODO verify whether this still works
         var googleDrive = keepassLib.GoogleDrive('/update', config.googleDrive);
         app.use('/update', googleDrive);
     }
