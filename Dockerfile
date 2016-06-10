@@ -1,7 +1,4 @@
-FROM node:4
-
-RUN apt-get update && apt-get install -y libcrypto++-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+FROM mhart/alpine-node:6.2.1
 
 EXPOSE 8443
 ENV PORT 8443
@@ -9,14 +6,17 @@ ENV PORT 8443
 ENV NODE_ENV production
 
 WORKDIR /keepass/
-RUN mkdir -p /keepass/certs && mkdir -p /keepass/local
-
-COPY ./run-keepass.sh /keepass/run-keepass.sh
-CMD ["bash", "-c", "/keepass/run-keepass.sh"]
 
 COPY ./README.md /keepass/README.md
 COPY ./package.json /keepass/package.json
-RUN npm install --production
+
+RUN apk add -U --virtual build-deps build-base python \
+    && npm install --production \
+    && apk del build-deps \
+    && mkdir -p /keepass/certs && mkdir -p /keepass/local
+
+COPY ./run-keepass.sh /keepass/run-keepass.sh
+CMD ["sh", "-c", "/keepass/run-keepass.sh"]
 
 COPY ./lib /keepass/lib
 COPY ./public /keepass/public
