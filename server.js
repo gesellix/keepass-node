@@ -1,6 +1,9 @@
 (function () {
     "use strict";
 
+    var bunyan = require('bunyan');
+    var log = bunyan.createLogger({name: 'keepass'});
+
     var optional = require('require-optional');
     var _ = require('lodash');
 
@@ -55,5 +58,5 @@
     else {
         app.listen(config.port);
     }
-    console.log('server is listening on port ' + config.port);
+    log.info('server is listening on port ' + config.port);
 })();
