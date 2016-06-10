@@ -1,5 +1,20 @@
-.idea
+.idea/
 *.iml
 
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
-node_modules
+keepass-node-config.js
+
+coverage/
+coverage-frontend/
+
+node_modules/
+npm-debug.log
+
+certs/*
+!certs/.gitkeep
+
+local/*
+!local/.gitkeep
+!local/example.kdbx
+!local/example.raw.json
+!local/example.kdbx.txt
+.DS_Store
