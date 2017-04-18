@@ -1,4 +1,4 @@
-#KeePass-Node
+# KeePass-Node
 
 [Node.js](http://nodejs.org/) with [AngularJS](http://angularjs.org/) implementation of a [KeePass2](http://www.keepass.info/) editor.
 
