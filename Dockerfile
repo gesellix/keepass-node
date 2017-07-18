@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6.2.1
+FROM node:6.11.1-alpine
 
 EXPOSE 8443
 ENV PORT 8443
